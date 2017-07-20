@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">LSEApp</string>
+
+    <string name="activity_write_screen_article_title">Write</string>
+    <string name="activity_select_saved_articles_title">Select saved</string>
+</resources>
