@@ -5,4 +5,12 @@ package com.navercorp.android.lseapp.app;
  */
 
 public class SelectSavedArticlesPresenter implements SelectSavedArticlesContract.Presenter {
+
+    @Override
+    public void start() {
+    }
+
+    @Override
+    public void end() {
+    }
 }

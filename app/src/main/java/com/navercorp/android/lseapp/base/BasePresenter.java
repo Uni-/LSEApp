@@ -5,4 +5,8 @@ package com.navercorp.android.lseapp.base;
  */
 
 public interface BasePresenter {
+
+    void start();
+
+    void end();
 }
