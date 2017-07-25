@@ -18,10 +18,10 @@ public class DocumentComponentViewFactory {
 
     public DocumentComponentView get(DocumentComponentType type) {
         switch (type) {
-            case TEXT:
-                return new DocumentTextView(mContext);
             case TITLE:
-                return new DocumentTitleView(mContext);
+                return new DocumentTitleComponentView(mContext);
+            case TEXT:
+                return new DocumentTextComponentView(mContext);
             default:
                 return null;
         }

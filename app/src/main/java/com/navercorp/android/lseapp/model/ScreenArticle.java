@@ -10,8 +10,16 @@ public class ScreenArticle implements Article {
 
     private Document mDocument;
 
+    public ScreenArticle() {
+        mDocument = new Document();
+    }
+
     @Override
     public ArticleType type() {
         return ArticleType.SCREEN;
+    }
+
+    public Document getDocument() {
+        return mDocument;
     }
 }

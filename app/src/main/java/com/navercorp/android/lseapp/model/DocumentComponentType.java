@@ -7,6 +7,8 @@ package com.navercorp.android.lseapp.model;
 public enum DocumentComponentType {
     TITLE,
     TEXT,
+    IMAGE,
+    MAP,
     UNUSED;
 
     private DocumentComponentType() {

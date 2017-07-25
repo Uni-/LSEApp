@@ -3,4 +3,10 @@
 
     <string name="activity_write_screen_article_title">Write</string>
     <string name="activity_select_saved_articles_title">Select saved</string>
+    <string name="view_document_title_hint">제목</string>
+    <string name="view_document_component_adder_text">본문 추가</string>
+    <string name="view_document_component_adder_image">이미지 추가</string>
+    <string name="view_document_component_adder_map">지도 추가</string>
+    <string name="menu_main_load">불러오기</string>
+    <string name="menu_main_save">넣어두기</string>
 </resources>

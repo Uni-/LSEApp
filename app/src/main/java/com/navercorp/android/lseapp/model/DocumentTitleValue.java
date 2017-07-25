@@ -6,7 +6,19 @@ package com.navercorp.android.lseapp.model;
 
 public class DocumentTitleValue implements DocumentComponentValue {
 
-    private String text;
+    private String mText;
+
+    public DocumentTitleValue() {
+        mText = "";
+    }
+
+    public DocumentTitleValue(DocumentTitleValue another) {
+        mText = new String(another.mText);
+    }
+
+    public DocumentTitleValue(String text) {
+        this.mText = text;
+    }
 
     @Override
     public DocumentComponentType componentType() {
@@ -15,11 +27,25 @@ public class DocumentTitleValue implements DocumentComponentValue {
 
     @Override
     public byte[] getDataAsBytes() {
-        return text.getBytes();
+        return mText.getBytes();
     }
 
     @Override
     public void setDataFromBytes(byte[] data) {
-        text = new String(data);
+        mText = new String(data);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DocumentTitleValue && mText.equals(((DocumentTitleValue) obj).mText);
+    }
+
+    @Override
+    public int hashCode() {
+        return mText.hashCode();
+    }
+
+    public String getText() {
+        return mText;
     }
 }

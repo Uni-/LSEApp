@@ -8,5 +8,13 @@ import java.util.ArrayList;
 
 public class Document {
 
-    private ArrayList<DocumentComponentValue> mElements;
+    private final ArrayList<DocumentComponentValue> mElementsList;
+
+    public Document() {
+        mElementsList = new ArrayList<>();
+    }
+
+    public ArrayList<DocumentComponentValue> getElementsList() {
+        return mElementsList;
+    }
 }

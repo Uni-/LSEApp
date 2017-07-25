@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/view_document_title_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/view_document_title_component_text_height"
+        android:hint="@string/view_document_title_hint"
+        android:inputType="text"
+        android:maxLines="1" />
+
+    <com.navercorp.android.lseapp.widget.DocumentComponentAdderView
+        android:id="@+id/view_document_title_document_component_adder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
+</LinearLayout>
