@@ -1,4 +1,4 @@
-package com.navercorp.android.lseapp.app;
+package com.navercorp.android.lseapp.app.selectsavedarticles;
 
 /**
  * Created by NAVER on 2017-07-20.

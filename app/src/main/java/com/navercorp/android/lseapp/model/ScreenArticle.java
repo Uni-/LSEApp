@@ -8,7 +8,7 @@ package com.navercorp.android.lseapp.model;
 
 public class ScreenArticle implements Article {
 
-    private Document mDocument;
+    private final Document mDocument;
 
     public ScreenArticle() {
         mDocument = new Document();

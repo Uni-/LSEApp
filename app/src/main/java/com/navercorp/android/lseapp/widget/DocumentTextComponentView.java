@@ -45,6 +45,7 @@ public class DocumentTextComponentView
 
     @Override // DocumentComponentView
     public void setValue(DocumentTextValue value) {
+        mEditText.setText(value.getText());
     }
 
     @Override // DocumentComponentView

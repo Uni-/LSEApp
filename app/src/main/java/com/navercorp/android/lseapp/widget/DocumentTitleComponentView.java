@@ -3,7 +3,6 @@ package com.navercorp.android.lseapp.widget;
 import android.content.Context;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -71,7 +70,7 @@ public class DocumentTitleComponentView
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
             if (mOnEnterKeyListener != null) {
-                mOnEnterKeyListener.onEnterKey();
+                mOnEnterKeyListener.onEnterKey(this);
             }
             return true;
         } else {
@@ -90,7 +89,6 @@ public class DocumentTitleComponentView
     @Override // DocumentComponentAdderView.OnComponentAddListener
     public void onAddComponent(View v, DocumentComponentType componentType) {
         if (mOnInsertComponentListener != null) {
-            Log.v("DocumentTitleComponent", "onAddComponent");
             mOnInsertComponentListener.onInsertComponent(this, componentType);
         }
     }
@@ -116,9 +114,5 @@ public class DocumentTitleComponentView
         mEditText.setOnKeyListener(DocumentTitleComponentView.this);
         mEditText.setOnFocusChangeListener(DocumentTitleComponentView.this);
         mComponentAdderView.setOnComponentAddListener(DocumentTitleComponentView.this);
-    }
-
-    public interface OnEnterKeyListener {
-        void onEnterKey();
     }
 }

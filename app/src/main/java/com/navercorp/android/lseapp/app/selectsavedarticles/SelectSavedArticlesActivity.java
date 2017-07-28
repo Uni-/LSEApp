@@ -1,4 +1,4 @@
-package com.navercorp.android.lseapp.app;
+package com.navercorp.android.lseapp.app.selectsavedarticles;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

@@ -45,6 +45,10 @@ public class DocumentTextValue implements DocumentComponentValue {
         return mText.hashCode();
     }
 
+    public String getText() {
+        return mText;
+    }
+
     public boolean isEmpty() {
         return mText.isEmpty();
     }

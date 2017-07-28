@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".app.WriteScreenArticleActivity"
+            android:name=".app.writescreenarticle.WriteScreenArticleActivity"
             android:label="@string/activity_write_screen_article_title"
             android:screenOrientation="portrait"
             android:configChanges="keyboard|screenSize"
@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".app.SelectSavedArticlesActivity"
+            android:name=".app.selectsavedarticles.SelectSavedArticlesActivity"
             android:label="@string/activity_select_saved_articles_title"></activity>
     </application>
 

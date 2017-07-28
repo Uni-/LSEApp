@@ -1,4 +1,4 @@
-package com.navercorp.android.lseapp.app;
+package com.navercorp.android.lseapp.app.selectsavedarticles;
 
 import com.navercorp.android.lseapp.base.BasePresenter;
 import com.navercorp.android.lseapp.base.BaseView;
