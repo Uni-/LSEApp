@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <Button
         android:id="@+id/view_document_component_adder_text"
-        android:text="@string/view_document_component_adder_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:padding="0dp"
+        android:text="@string/view_document_component_adder_text" />
 
     <Button
         android:id="@+id/view_document_component_adder_image"
-        android:text="@string/view_document_component_adder_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:padding="0dp"
+        android:text="@string/view_document_component_adder_image" />
 
     <Button
         android:id="@+id/view_document_component_adder_map"
-        android:text="@string/view_document_component_adder_map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:padding="0dp"
+        android:text="@string/view_document_component_adder_map" />
 
 </LinearLayout>

@@ -6,7 +6,7 @@ package com.navercorp.android.lseapp.model;
 
 public enum ArticleType {
     SCREEN,
-    UNUSED;
+    ;
 
     private ArticleType() {
     }

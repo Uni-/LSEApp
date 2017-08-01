@@ -9,7 +9,7 @@ public enum DocumentComponentType {
     TEXT,
     IMAGE,
     MAP,
-    UNUSED;
+    ;
 
     private DocumentComponentType() {
     }

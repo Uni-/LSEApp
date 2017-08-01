@@ -5,14 +5,14 @@ import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.navercorp.android.lseapp.R;
 import com.navercorp.android.lseapp.model.DocumentComponentType;
 import com.navercorp.android.lseapp.model.DocumentTitleValue;
 
 public class DocumentTitleComponentView
-        extends RelativeLayout
+        extends LinearLayout
         implements
         DocumentComponentView<DocumentTitleComponentView, DocumentTitleValue>,
         View.OnKeyListener,

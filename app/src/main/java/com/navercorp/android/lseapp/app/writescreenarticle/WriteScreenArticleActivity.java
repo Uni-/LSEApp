@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,11 +18,13 @@ import com.navercorp.android.lseapp.model.DocumentComponentValue;
 import com.navercorp.android.lseapp.model.DocumentComponentValueFactory;
 import com.navercorp.android.lseapp.model.DocumentTextValue;
 import com.navercorp.android.lseapp.model.ScreenArticle;
-import com.navercorp.android.lseapp.util.ListChange;
+import com.navercorp.android.lseapp.util.Selection;
+import com.navercorp.android.lseapp.util.ListChangeType;
 import com.navercorp.android.lseapp.widget.DocumentComponentView;
 import com.navercorp.android.lseapp.widget.DocumentComponentViewFactory;
 import com.navercorp.android.lseapp.widget.DocumentTextComponentView;
 import com.navercorp.android.lseapp.widget.DocumentTitleComponentView;
+import com.navercorp.android.lseapp.widget.WindowBottomBarView;
 
 import java.util.List;
 
@@ -33,7 +34,9 @@ public class WriteScreenArticleActivity
         WriteScreenArticleContract.View,
         DocumentComponentView.OnEnterKeyListener,
         DocumentComponentView.OnContentFocusChangeListener,
-        DocumentComponentView.OnInsertComponentListener {
+        DocumentComponentView.OnInsertComponentListener,
+        DocumentTextComponentView.OnContentSelectionChangeListener,
+        WindowBottomBarView.ActionListener {
 
     private ScreenArticle mArticle;
 
@@ -43,18 +46,23 @@ public class WriteScreenArticleActivity
     private RvAdapter mRvAdapter;
     private RvLayoutManager mRvLayoutManager;
 
+    private WindowBottomBarView mBottomBarView;
+
     @Override // AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_write_screen_article);
 
-        mRecyclerView = (RecyclerView) findViewById(android.R.id.list);
+        mRecyclerView = (RecyclerView) findViewById(R.id.activity_write_screen_article_recyclerview);
+        mBottomBarView = (WindowBottomBarView) findViewById(R.id.activity_write_screen_article_bottombarview);
 
         mRvAdapter = new RvAdapter(WriteScreenArticleActivity.this);
         mRvLayoutManager = new RvLayoutManager(WriteScreenArticleActivity.this);
         mRecyclerView.setAdapter(mRvAdapter);
         mRecyclerView.setLayoutManager(mRvLayoutManager);
+
+        mBottomBarView.setActionListener(this);
 
         mPresenter = new WriteScreenArticlePresenter(WriteScreenArticleActivity.this);
         mPresenter.start();
@@ -122,6 +130,8 @@ public class WriteScreenArticleActivity
             mRvAdapter.replaceItem(index, v.getValue(), false);
         }
 
+        mBottomBarView.updateButtons(v.getValue(), new Selection());
+
         afterSetFocus(index, hasFocus);
     }
 
@@ -135,6 +145,21 @@ public class WriteScreenArticleActivity
         mRvAdapter.addItem(index + 1, componentType, true);
 
         requestItemViewContentFocusAt(index + 1, false);
+    }
+
+    @Override // DocumentTextComponentView.OnContentSelectionChangeListener
+    public void onContentSelectionChange(DocumentTextComponentView v, Selection selection) {
+        mBottomBarView.updateButtons(v.getValue(), selection);
+    }
+
+    @Override // WindowBottomBarView.ActionListener
+    public void onRemoveComponent() {
+        int index = mRvLayoutManager.indexOf(mRvLayoutManager.getFocusedChild());
+        if (index == -1) {
+            return;
+        }
+
+        mRvAdapter.removeItem(index, true);
     }
 
     private void valuesChanged() {
@@ -156,7 +181,7 @@ public class WriteScreenArticleActivity
         }
     }
 
-    private void valuesChanged(final int index, final ListChange change) {
+    private void valuesChanged(final int index, final ListChangeType change) {
         switch (change) {
             case INSERT: {
                 mRvAdapter.notifyItemInserted(index);
@@ -168,7 +193,7 @@ public class WriteScreenArticleActivity
                 mRvLayoutManager.onItemsRemoved(mRecyclerView, index, 1);
                 break;
             }
-            case CHANGE: {
+            case REPLACE: {
                 mRvAdapter.notifyItemChanged(index);
                 mRvLayoutManager.onItemsUpdated(mRecyclerView, index, 1);
             }
@@ -176,7 +201,7 @@ public class WriteScreenArticleActivity
         }
     }
 
-    private void valuesChanged(final int index, final ListChange change, boolean notifyStrictOrLazy) {
+    private void valuesChanged(final int index, final ListChangeType change, boolean notifyStrictOrLazy) {
         if (notifyStrictOrLazy) {
             valuesChanged(index, change);
         } else {
@@ -310,6 +335,7 @@ public class WriteScreenArticleActivity
                 case TEXT: {
                     DocumentTextComponentView textView = (DocumentTextComponentView) view;
                     textView.setOnContentFocusChangeListener(mActivity);
+                    textView.setOnContentSelectionChangeListener(mActivity);
                     textView.setOnInsertComponentListener(mActivity);
                     break;
                 }
@@ -347,11 +373,11 @@ public class WriteScreenArticleActivity
 
             list.add(index, value);
 
-            mActivity.valuesChanged(index, ListChange.INSERT, notifyStrictOrLazy);
+            mActivity.valuesChanged(index, ListChangeType.INSERT, notifyStrictOrLazy);
         }
 
         public void addItem(int index, DocumentComponentType type, boolean notifyStrictOrLazy) {
-            addItem(index, mItemValueFactory.get(type), notifyStrictOrLazy);
+            addItem(index, mItemValueFactory.create(type), notifyStrictOrLazy);
         }
 
         public void removeItem(int index, boolean notifyStrictOrLazy) {
@@ -359,16 +385,15 @@ public class WriteScreenArticleActivity
 
             list.remove(index);
 
-            mActivity.valuesChanged(index, ListChange.REMOVE, notifyStrictOrLazy);
+            mActivity.valuesChanged(index, ListChangeType.REMOVE, notifyStrictOrLazy);
         }
 
         public void replaceItem(int index, DocumentComponentValue value, boolean notifyStrictOrLazy) {
             final List<DocumentComponentValue> list = mActivity.getDocumentElementsList();
 
-            list.remove(index);
-            list.add(index, value);
+            list.set(index, value);
 
-            mActivity.valuesChanged(index, ListChange.CHANGE, notifyStrictOrLazy);
+            mActivity.valuesChanged(index, ListChangeType.REPLACE, notifyStrictOrLazy);
         }
 
         public DocumentComponentValue getItem(int index) {

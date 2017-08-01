@@ -1,12 +1,36 @@
 <resources>
     <string name="app_name">LSEApp</string>
 
+    <string name="ok">확인</string>
+    <string name="cancel">취소</string>
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
+
     <string name="activity_write_screen_article_title">Write</string>
     <string name="activity_select_saved_articles_title">Select saved</string>
-    <string name="view_document_title_hint">제목</string>
-    <string name="view_document_component_adder_text">본문 추가</string>
-    <string name="view_document_component_adder_image">이미지 추가</string>
-    <string name="view_document_component_adder_map">지도 추가</string>
+
+    <string name="view_document_title_component_text_hint">제목</string>
+
+    <string name="view_document_component_adder_text">T</string>
+    <string name="view_document_component_adder_image">I</string>
+    <string name="view_document_component_adder_map">M</string>
+
     <string name="menu_main_load">불러오기</string>
     <string name="menu_main_save">넣어두기</string>
+
+    <string name="dialog_color_picker_title">색상 선택</string>
+    <string name="dialog_color_picker_ok">@string/ok</string>
+    <string name="dialog_color_picker_cancel">@string/cancel</string>
+
+    <string name="dialog_integer_stepper_title">크기 변경</string>
+    <string name="dialog_integer_stepper_ok">@string/ok</string>
+    <string name="dialog_integer_stepper_cancel">@string/cancel</string>
+
+    <string name="view_window_bottom_bar_title_background">◪</string>
+    <string name="view_window_bottom_bar_text_bold"><b>B</b></string>
+    <string name="view_window_bottom_bar_text_italic"><i>I</i></string>
+    <string name="view_window_bottom_bar_text_underline"><u>U</u></string>
+    <string name="view_window_bottom_bar_text_size"></string>
+    <string name="view_window_bottom_bar_text_color">◐</string>
+    <string name="view_window_bottom_bar_component_remove">×</string>
 </resources>

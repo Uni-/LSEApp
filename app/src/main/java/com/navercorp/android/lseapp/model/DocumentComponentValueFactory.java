@@ -12,7 +12,7 @@ import com.navercorp.android.lseapp.widget.DocumentTitleComponentView;
 
 public class DocumentComponentValueFactory {
 
-    public DocumentComponentValue get(DocumentComponentType type) {
+    public DocumentComponentValue create(DocumentComponentType type) {
         switch (type) {
             case TITLE:
                 return new DocumentTitleValue();

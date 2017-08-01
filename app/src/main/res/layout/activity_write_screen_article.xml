@@ -7,11 +7,16 @@
     tools:context=".app.writescreenarticle.WriteScreenArticleActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@android:id/list"
+        android:id="@+id/activity_write_screen_article_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@android:color/white"
         android:padding="@dimen/activity_write_screen_article_list_padding" />
+
+    <com.navercorp.android.lseapp.widget.WindowBottomBarView
+        android:id="@+id/activity_write_screen_article_bottombarview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatEditText
+    <com.navercorp.android.lseapp.widget.SensitiveEditText
         android:id="@+id/view_document_text_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

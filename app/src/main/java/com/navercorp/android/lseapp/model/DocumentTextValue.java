@@ -1,23 +1,40 @@
 package com.navercorp.android.lseapp.model;
 
+import com.navercorp.android.lseapp.util.Selection;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by NAVER on 2017-07-21.
  */
 
 public class DocumentTextValue implements DocumentComponentValue {
 
+    public static final int FONT_SIZE_DEFAULT_DP = 16;
+
     private String mText;
+    private List<TextSpan> mTextSpansList;
+    private int mTextFontSize;
 
     public DocumentTextValue() {
-        mText = "";
+        this("");
     }
 
     public DocumentTextValue(DocumentTextValue another) {
-        mText = new String(another.mText);
+        this(another.mText, another.mTextSpansList, another.mTextFontSize);
     }
 
     public DocumentTextValue(String text) {
-        this.mText = text;
+        mText = text;
+        mTextSpansList = new ArrayList<>();
+        mTextFontSize = FONT_SIZE_DEFAULT_DP;
+    }
+
+    public DocumentTextValue(String text, List<TextSpan> textSpansList, int textFontSize) {
+        mText = text;
+        mTextSpansList = new ArrayList<>(textSpansList);
+        mTextFontSize = textFontSize;
     }
 
     @Override
@@ -49,7 +66,19 @@ public class DocumentTextValue implements DocumentComponentValue {
         return mText;
     }
 
+    public TextSpan[] getTextSpans() {
+        return mTextSpansList.toArray(new TextSpan[0]);
+    }
+
+    public int getTextFontSize() {
+        return mTextFontSize;
+    }
+
     public boolean isEmpty() {
         return mText.isEmpty();
+    }
+
+    public TextSpan getSpanOverFocus(Selection selection) {
+        return new TextSpan();
     }
 }
