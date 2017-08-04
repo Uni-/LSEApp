@@ -2,7 +2,7 @@ package com.navercorp.android.lseapp.widget;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
+import android.content.Intent;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
@@ -14,10 +14,12 @@ import com.navercorp.android.lseapp.R;
 import com.navercorp.android.lseapp.model.DocumentComponentType;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
 import com.navercorp.android.lseapp.model.DocumentTextValue;
+import com.navercorp.android.lseapp.model.TextProperty;
 import com.navercorp.android.lseapp.model.TextSpan;
+import com.navercorp.android.lseapp.model.TextSpanSet;
 import com.navercorp.android.lseapp.util.ColorPickerDialogBuilder;
-import com.navercorp.android.lseapp.util.Selection;
 import com.navercorp.android.lseapp.util.IntegerStepperDialogBuilder;
+import com.navercorp.android.lseapp.util.Interval;
 
 public class WindowBottomBarView
         extends RelativeLayout
@@ -62,18 +64,37 @@ public class WindowBottomBarView
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.view_window_bottom_bar_button_title_background: {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                getContext().startActivity(intent); ;
+                break;
+            }
+            case R.id.view_window_bottom_bar_checkbox_text_bold: {
+                mTextBold = getTextBoldButtonChecked();
+                dispatchTextBoldChange();
+                break;
+            }
+            case R.id.view_window_bottom_bar_checkbox_text_italic: {
+                mTextItalic = getTextItalicButtonChecked();
+                dispatchTextItalicChange();
+                break;
+            }
+            case R.id.view_window_bottom_bar_checkbox_text_underline: {
+                mTextUnderline = getTextUnderlineButtonChecked();
+                dispatchTextUnderlineChange();
                 break;
             }
             case R.id.view_window_bottom_bar_button_text_size: {
                 IntegerStepperDialogBuilder builder = new IntegerStepperDialogBuilder(getContext());
-                builder.value(24);
+                builder.value(mTextFontSize);
                 builder.setOnDecideValueListener(this);
                 builder.show();
                 break;
             }
             case R.id.view_window_bottom_button_bar_text_color: {
                 ColorPickerDialogBuilder builder = new ColorPickerDialogBuilder(getContext());
-                builder.oldColor(Color.BLACK);
+                builder.oldColor(mTextColor).newColor(mTextColor);
                 builder.setOnDecideColorListener(this);
                 builder.show();
                 break;
@@ -86,47 +107,34 @@ public class WindowBottomBarView
         }
     }
 
-    @Override // AppCompatCheckBox.OnCheckedChangeListener
+    @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()) {
-            case R.id.view_window_bottom_bar_checkbox_text_bold: {
-                mTextBold = getTextBoldButtonChecked();
-                // TODO
-                break;
-            }
-            case R.id.view_window_bottom_bar_checkbox_text_italic: {
-                mTextItalic = getTextItalicButtonChecked();
-                // TODO
-                break;
-            }
-            case R.id.view_window_bottom_bar_checkbox_text_underline: {
-                mTextUnderline = getTextUnderlineButtonChecked();
-                // TODO
-                break;
-            }
-            default:
-        }
+        // TODO
     }
 
     @Override // ColorPickerDialogBuilder.OnDecideColorListener
     public void onDecideColor(DialogInterface dialog, int color) {
         setTextColorButtonValue(color);
+        mTextColor = color;
+        dispatchTextColorChange();
     }
 
     @Override // IntegerStepperDialogBuilder.OnDecideValueListener
     public void onDecideValue(DialogInterface dialog, int value) {
         setTextFontSizeButtonValue(value);
+        mTextFontSize = value;
+        dispatchTextFontSizeChange();
     }
 
     public void setActionListener(ActionListener actionListener) {
         mActionListener = actionListener;
     }
 
-    public void updateButtons(DocumentComponentValue componentValue, Selection selection) {
+    public void updateButtons(DocumentComponentValue componentValue, Interval interval) {
         DocumentComponentType componentType = componentValue.componentType();
         InnerViewsPolicy policy = InnerViewsPolicy.findInstanceByComponentType(componentType);
         policy.arrangeButtons(this);
-        policy.setButtonValues(this, componentValue, selection);
+        policy.setButtonValues(this, componentValue, interval);
     }
 
     private void init() {
@@ -141,9 +149,9 @@ public class WindowBottomBarView
         mComponentRemoveButton = (AppCompatButton) findViewById(R.id.view_window_bottom_bar_button_component_remove);
 
         mTitleBackgroundButton.setOnClickListener(this);
-        mTextBoldCheckBox.setOnCheckedChangeListener(this);
-        mTextItalicCheckBox.setOnCheckedChangeListener(this);
-        mTextUnderlineCheckBox.setOnCheckedChangeListener(this);
+        mTextBoldCheckBox.setOnClickListener(this);
+        mTextItalicCheckBox.setOnClickListener(this);
+        mTextUnderlineCheckBox.setOnClickListener(this);
         mTextSizeButton.setOnClickListener(this);
         mTextColorButton.setOnClickListener(this);
         mComponentRemoveButton.setOnClickListener(this);
@@ -174,11 +182,41 @@ public class WindowBottomBarView
     }
 
     private void setTextFontSizeButtonValue(int fontSize) {
-        mTextSizeButton.setTextSize(fontSize);
+        mTextSizeButton.setText(String.valueOf(fontSize));
     }
 
     private void setTextColorButtonValue(int textColor) {
         mTextColorButton.setTextColor(textColor);
+    }
+
+    private void dispatchTextBoldChange() {
+        if (mActionListener != null) {
+            mActionListener.onTextPropertyChange(TextProperty.BOLD, mTextBold);
+        }
+    }
+
+    private void dispatchTextItalicChange() {
+        if (mActionListener != null) {
+            mActionListener.onTextPropertyChange(TextProperty.ITALIC, mTextItalic);
+        }
+    }
+
+    private void dispatchTextUnderlineChange() {
+        if (mActionListener != null) {
+            mActionListener.onTextPropertyChange(TextProperty.UNDERLINE, mTextUnderline);
+        }
+    }
+
+    private void dispatchTextFontSizeChange() {
+        if (mActionListener != null) {
+            mActionListener.onTextPropertyChange(TextProperty.SIZE, mTextFontSize);
+        }
+    }
+
+    private void dispatchTextColorChange() {
+        if (mActionListener != null) {
+            mActionListener.onTextPropertyChange(TextProperty.COLOR, mTextColor);
+        }
     }
 
     private void dispatchRemoveComponent() {
@@ -188,6 +226,8 @@ public class WindowBottomBarView
     }
 
     public interface ActionListener {
+        void onTextPropertyChange(TextProperty textProperty, Object o);
+
         void onRemoveComponent();
     }
 
@@ -206,7 +246,7 @@ public class WindowBottomBarView
             }
 
             @Override
-            public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Selection selection) {
+            public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Interval interval) {
                 // do nothing
             }
         }),
@@ -223,14 +263,21 @@ public class WindowBottomBarView
             }
 
             @Override
-            public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Selection selection) {
+            public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Interval interval) {
                 DocumentTextValue textValue = (DocumentTextValue) value;
-                TextSpan span = textValue.getSpanOverFocus(selection);
-                view.setTextBoldButtonValue(span.isBold());
-                view.setTextItalicButtonValue(span.isItalic());
-                view.setTextUnderlineButtonValue(span.isUnderlined());
-                view.setTextFontSizeButtonValue(textValue.getTextFontSize());
-                view.setTextColorButtonValue(span.getFontColor());
+                TextSpanSet spans = textValue.getTextSpans(interval);
+                TextSpan span;
+                if (spans.size() != 0) {
+                    TextSpan spanKey = new TextSpan(interval);
+                    span = spans.floor(spanKey) != null ? spans.floor(spanKey) : spans.ceiling(spanKey); // At least, one is not null
+                } else {
+                    span = new TextSpan();
+                }
+                view.setTextBoldButtonValue(view.mTextBold = span.isBold());
+                view.setTextItalicButtonValue(view.mTextItalic = span.isItalic());
+                view.setTextUnderlineButtonValue(view.mTextUnderline = span.isUnderlined());
+                view.setTextFontSizeButtonValue(view.mTextFontSize = span.getFontSize());
+                view.setTextColorButtonValue(view.mTextColor = span.getFontColor());
             }
         }),
         IMAGE(new Delegate() {
@@ -246,7 +293,7 @@ public class WindowBottomBarView
             }
 
             @Override
-            public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Selection selection) {
+            public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Interval interval) {
                 // TODO
             }
         }),
@@ -263,11 +310,12 @@ public class WindowBottomBarView
             }
 
             @Override
-            public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Selection selection) {
+            public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Interval interval) {
                 // TODO
             }
         }),
-        ;
+        @Deprecated
+        UNUSED(null);
 
         private Delegate mDelegate;
 
@@ -279,23 +327,29 @@ public class WindowBottomBarView
             mDelegate.arrangeButtons(view);
         }
 
-        public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Selection selection) {
-            mDelegate.setButtonValues(view, value, selection);
+        public void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Interval interval) {
+            mDelegate.setButtonValues(view, value, interval);
         }
 
         public static InnerViewsPolicy findInstanceByComponentType(DocumentComponentType componentType) {
             switch (componentType) {
-                case TITLE: return TITLE;
-                case TEXT: return TEXT;
-                case IMAGE: return IMAGE;
-                case MAP: return MAP;
-                default: return null;
+                case TITLE:
+                    return TITLE;
+                case TEXT:
+                    return TEXT;
+                case IMAGE:
+                    return IMAGE;
+                case MAP:
+                    return MAP;
+                default:
+                    return null;
             }
         }
 
         private interface Delegate {
             void arrangeButtons(WindowBottomBarView view);
-            void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Selection selection);
+
+            void setButtonValues(WindowBottomBarView view, DocumentComponentValue value, Interval interval);
         }
     }
 }

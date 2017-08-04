@@ -1,6 +1,7 @@
 package com.navercorp.android.lseapp.model;
 
-import com.navercorp.android.lseapp.util.Selection;
+import com.android.internal.util.Predicate;
+import com.navercorp.android.lseapp.util.Interval;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,30 +12,25 @@ import java.util.List;
 
 public class DocumentTextValue implements DocumentComponentValue {
 
-    public static final int FONT_SIZE_DEFAULT_DP = 16;
-
     private String mText;
-    private List<TextSpan> mTextSpansList;
-    private int mTextFontSize;
+    private TextSpanSet mTextSpanSet;
 
     public DocumentTextValue() {
         this("");
     }
 
     public DocumentTextValue(DocumentTextValue another) {
-        this(another.mText, another.mTextSpansList, another.mTextFontSize);
+        this(another.mText, another.mTextSpanSet);
     }
 
     public DocumentTextValue(String text) {
         mText = text;
-        mTextSpansList = new ArrayList<>();
-        mTextFontSize = FONT_SIZE_DEFAULT_DP;
+        mTextSpanSet = new TextSpanSet();
     }
 
-    public DocumentTextValue(String text, List<TextSpan> textSpansList, int textFontSize) {
+    public DocumentTextValue(String text, TextSpanSet TextSpanSet) {
         mText = text;
-        mTextSpansList = new ArrayList<>(textSpansList);
-        mTextFontSize = textFontSize;
+        mTextSpanSet = new TextSpanSet(TextSpanSet);
     }
 
     @Override
@@ -54,31 +50,34 @@ public class DocumentTextValue implements DocumentComponentValue {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof DocumentTextValue && mText.equals(((DocumentTextValue) obj).mText);
+        return (this == obj) || (obj instanceof DocumentTextValue) && (mText.equals(((DocumentTextValue) obj).mText)) && mTextSpanSet.equals(((DocumentTextValue) obj).mTextSpanSet);
     }
 
     @Override
     public int hashCode() {
-        return mText.hashCode();
+        return 855621 ^ mText.hashCode() ^ mTextSpanSet.hashCode();
     }
 
     public String getText() {
         return mText;
     }
 
-    public TextSpan[] getTextSpans() {
-        return mTextSpansList.toArray(new TextSpan[0]);
-    }
-
-    public int getTextFontSize() {
-        return mTextFontSize;
+    public TextSpan[] getTextSpansArray() {
+        return mTextSpanSet.toArray(new TextSpan[0]);
     }
 
     public boolean isEmpty() {
         return mText.isEmpty();
     }
 
-    public TextSpan getSpanOverFocus(Selection selection) {
-        return new TextSpan();
+    public TextSpanSet getTextSpans(final Interval interval) {
+        final Predicate<TextSpan> p = new Predicate<TextSpan>() {
+            @Override
+            public boolean apply(TextSpan textSpan) {
+                return textSpan.getInterval().intersects(interval) || (textSpan.getInterval().mRightBound == interval.mRightBound) && interval.isEmpty();
+            }
+        };
+        return mTextSpanSet.filter(p);
     }
+
 }

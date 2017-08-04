@@ -22,7 +22,7 @@ public class DocumentComponentViewFactory {
                 return new DocumentTitleComponentView(mContext);
             case TEXT:
                 return new DocumentTextComponentView(mContext);
-            default:
+            default: // TODO
                 return null;
         }
     }

@@ -5,11 +5,15 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/view_document_title_edit_text"
+        android:id="@+id/view_document_title_edittext"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/view_document_title_component_text_height"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:hint="@string/view_document_title_component_text_hint" />
+        android:layout_height="wrap_content"
+        android:hint="@string/view_document_title_component_text_hint"
+        android:minHeight="@dimen/view_document_title_component_text_height"
+        android:scrollHorizontally="false"
+        android:background="@drawable/component_background_pad"
+        android:scrollbars="vertical"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <com.navercorp.android.lseapp.widget.DocumentComponentAdderView
         android:id="@+id/view_document_title_document_component_adder"

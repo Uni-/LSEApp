@@ -1,10 +1,12 @@
 package com.navercorp.android.lseapp.util;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatTextView;
+import android.view.WindowManager;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.SaturationBar;
@@ -31,23 +33,31 @@ public class ColorPickerDialogBuilder
     private AppCompatTextView mTextView;
 
     private int mOldColor;
+    private int mNewColor;
     private OnDecideColorListener mOnDecideColorListener;
 
     public ColorPickerDialogBuilder(Context context) {
         mContext = context;
     }
 
-    public void oldColor(int oldColor) {
+    public ColorPickerDialogBuilder oldColor(int oldColor) {
         mOldColor = oldColor;
+        return this;
     }
 
-    public DialogInterface show() {
+    public ColorPickerDialogBuilder newColor(int newColor) {
+        mNewColor = newColor;
+        return this;
+    }
+
+    public Dialog show() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
         builder.setTitle(R.string.dialog_color_picker_title);
         builder.setView(R.layout.dialog_color_picker);
         builder.setPositiveButton(R.string.dialog_color_picker_ok, this);
         builder.setNegativeButton(R.string.dialog_color_picker_cancel, this);
+        builder.setCancelable(false);
 
         mAlertDialog = builder.show();
 
@@ -61,11 +71,13 @@ public class ColorPickerDialogBuilder
         mValueBar.setOnValueChangedListener(this);
 
         mColorPicker.setOldCenterColor(mOldColor);
+        mColorPicker.setShowOldCenterColor(false);
+        mColorPicker.setColor(mNewColor);
+        mColorPicker.setColor(mColorPicker.getColor());
         mSaturationBar.setColor(mColorPicker.getColor());
         mValueBar.setColor(mSaturationBar.getColor());
-        mColorPicker.setNewCenterColor(mValueBar.getColor());
 
-        showFinalColorText();
+        showNewColorText();
 
         return mAlertDialog;
     }
@@ -74,7 +86,7 @@ public class ColorPickerDialogBuilder
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             int newColor = mValueBar.getColor();
-            dispatchOnDecideColor(newColor);
+            dispatchOnDecideColor();
         }
     }
 
@@ -82,45 +94,47 @@ public class ColorPickerDialogBuilder
     public void onColorChanged(int color) {
         mSaturationBar.setColor(color);
         mValueBar.setColor(mSaturationBar.getColor());
-        showFinalColorText();
+        mNewColor = mValueBar.getColor();
+        showNewColorText();
     }
 
     @Override // SaturationBar.OnSaturationChangedListener
     public void onSaturationChanged(int saturation) {
         mValueBar.setColor(mSaturationBar.getColor());
-        showFinalColorText();
+        mNewColor = mValueBar.getColor();
+        showNewColorText();
     }
 
     @Override // ValueBar.OnValueChangedListener
     public void onValueChanged(int value) {
-        showFinalColorText();
+        mNewColor = mValueBar.getColor();
+        showNewColorText();
     }
 
     public void setOnDecideColorListener(OnDecideColorListener onDecideColorListener) {
         mOnDecideColorListener = onDecideColorListener;
     }
 
-    private void showFinalColorText() {
-        int colorARGB = mValueBar.getColor();
+    private void showNewColorText() {
         float[] colorHSV = new float[3];
 
-        Color.colorToHSV(colorARGB, colorHSV);
-        String colorRGBString = "#".concat(String.format("%08x", colorARGB).substring(2));
+        Color.colorToHSV(mNewColor, colorHSV);
+        String colorRGBString = "#".concat(String.format("%08x", mNewColor).substring(2));
 
-        float luminance = colorLuminance(colorARGB);
+        float luminance = colorLuminance(mNewColor);
 
         mTextView.setText(colorRGBString);
-        mTextView.setBackgroundColor(colorARGB);
-        if (/*colorHSV[1] < 0.8 && colorHSV[2] > 0.8*/ colorLuminance(colorARGB) > 0.6) {
+        mTextView.setBackgroundColor(mNewColor);
+        if (/*colorHSV[1] < 0.8 && colorHSV[2] > 0.8*/ colorLuminance(mNewColor) > 0.6) {
             mTextView.setTextColor(Color.BLACK);
         } else {
             mTextView.setTextColor(Color.WHITE);
         }
     }
 
-    private void dispatchOnDecideColor(int color) {
+    private void dispatchOnDecideColor() {
         if (mOnDecideColorListener != null) {
-            mOnDecideColorListener.onDecideColor(mAlertDialog, color);
+            mOnDecideColorListener.onDecideColor(mAlertDialog, mNewColor);
         }
     }
 

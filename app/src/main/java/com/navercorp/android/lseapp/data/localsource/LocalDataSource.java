@@ -1,4 +1,4 @@
-package com.navercorp.android.lseapp.data.local;
+package com.navercorp.android.lseapp.data.localsource;
 
 import android.content.Context;
 

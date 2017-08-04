@@ -37,12 +37,12 @@ public class DocumentTitleValue implements DocumentComponentValue {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof DocumentTitleValue && mText.equals(((DocumentTitleValue) obj).mText);
+        return (this == obj) || (obj instanceof DocumentTitleValue) && (mText.equals(((DocumentTitleValue) obj).mText));
     }
 
     @Override
     public int hashCode() {
-        return mText.hashCode();
+        return 927490 ^ mText.hashCode();
     }
 
     public String getText() {

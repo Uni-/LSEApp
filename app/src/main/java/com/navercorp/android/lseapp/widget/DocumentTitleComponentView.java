@@ -108,7 +108,7 @@ public class DocumentTitleComponentView
     private void init() {
         inflate(getContext(), R.layout.view_document_title_component, this);
 
-        mEditText = (AppCompatEditText) findViewById(R.id.view_document_title_edit_text);
+        mEditText = (AppCompatEditText) findViewById(R.id.view_document_title_edittext);
         mComponentAdderView = (DocumentComponentAdderView) findViewById(R.id.view_document_title_document_component_adder);
 
         mEditText.setOnKeyListener(DocumentTitleComponentView.this);

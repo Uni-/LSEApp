@@ -1,11 +1,13 @@
 package com.navercorp.android.lseapp.util;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.navercorp.android.lseapp.R;
 
@@ -36,13 +38,14 @@ public class IntegerStepperDialogBuilder
         mValue = value;
     }
 
-    public DialogInterface show() {
+    public Dialog show() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
         builder.setTitle(R.string.dialog_integer_stepper_title);
         builder.setView(R.layout.dialog_integer_stepper);
         builder.setPositiveButton(R.string.dialog_color_picker_ok, this);
         builder.setNegativeButton(R.string.dialog_color_picker_cancel, this);
+        builder.setCancelable(false);
 
         mAlertDialog = builder.show();
 

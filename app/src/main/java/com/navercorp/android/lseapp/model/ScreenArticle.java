@@ -1,5 +1,8 @@
 package com.navercorp.android.lseapp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by NAVER on 2017-07-21.
  *
@@ -8,10 +11,11 @@ package com.navercorp.android.lseapp.model;
 
 public class ScreenArticle implements Article {
 
-    private final Document mDocument;
+
+    private final List<DocumentComponentValue> mComponentsList;
 
     public ScreenArticle() {
-        mDocument = new Document();
+        mComponentsList = new ArrayList<>();
     }
 
     @Override
@@ -19,7 +23,7 @@ public class ScreenArticle implements Article {
         return ArticleType.SCREEN;
     }
 
-    public Document getDocument() {
-        return mDocument;
+    public List<DocumentComponentValue> getComponentsList() {
+        return mComponentsList;
     }
 }

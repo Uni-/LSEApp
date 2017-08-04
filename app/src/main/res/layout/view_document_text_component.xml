@@ -7,7 +7,9 @@
     <com.navercorp.android.lseapp.widget.SensitiveEditText
         android:id="@+id/view_document_text_edit_text"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@drawable/component_background_pad"
+        android:scrollHorizontally="false" />
 
     <com.navercorp.android.lseapp.widget.DocumentComponentAdderView
         android:id="@+id/view_document_text_document_component_adder"

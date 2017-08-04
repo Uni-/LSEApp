@@ -2,6 +2,7 @@ package com.navercorp.android.lseapp.app.writescreenarticle;
 
 import com.navercorp.android.lseapp.base.BasePresenter;
 import com.navercorp.android.lseapp.base.BaseView;
+import com.navercorp.android.lseapp.model.Article;
 import com.navercorp.android.lseapp.model.ScreenArticle;
 
 /**
@@ -11,12 +12,9 @@ import com.navercorp.android.lseapp.model.ScreenArticle;
 public interface WriteScreenArticleContract {
 
     interface View extends BaseView {
-
-        void setArticle(ScreenArticle article);
-
-        ScreenArticle getArticle();
     }
 
     interface Presenter extends BasePresenter {
+        ScreenArticle getArticle();
     }
 }

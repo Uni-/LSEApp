@@ -18,7 +18,7 @@ public class DocumentComponentValueFactory {
                 return new DocumentTitleValue();
             case TEXT:
                 return new DocumentTextValue();
-            default:
+            default: // TODO
                 return null;
         }
     }
