@@ -9,11 +9,10 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.navercorp.android.lseapp.R;
 import com.navercorp.android.lseapp.model.DocumentComponentType;
@@ -25,15 +24,15 @@ import com.navercorp.android.lseapp.util.Interval;
 import com.navercorp.android.lseapp.util.WrappedUnderlineSpan;
 
 public class DocumentTextComponentView
-        extends LinearLayout
+        extends RelativeLayout
         implements
         DocumentComponentView<DocumentTextComponentView, DocumentTextValue>,
         View.OnFocusChangeListener,
-        DocumentComponentAdderView.OnComponentAddListener,
+        DocumentComponentModifierView.OnComponentAddListener,
         SensitiveEditText.OnSelectionChangeListener {
 
     private SensitiveEditText mEditText;
-    private DocumentComponentAdderView mComponentAdderView;
+    private DocumentComponentModifierView mComponentAdderView;
 
     private OnContentFocusChangeListener mOnContentFocusChangeListener;
     private OnInsertComponentListener mOnInsertComponentListener;
@@ -298,8 +297,8 @@ public class DocumentTextComponentView
     private void init() {
         inflate(getContext(), R.layout.view_document_text_component, this);
 
-        mEditText = (SensitiveEditText) findViewById(R.id.view_document_text_edit_text);
-        mComponentAdderView = (DocumentComponentAdderView) findViewById(R.id.view_document_text_document_component_adder);
+        mEditText = (SensitiveEditText) findViewById(R.id.view_document_text_edittext);
+        mComponentAdderView = (DocumentComponentModifierView) findViewById(R.id.view_document_text_document_component_adder);
 
         mEditText.setOnFocusChangeListener(DocumentTextComponentView.this);
         mComponentAdderView.setOnComponentAddListener(DocumentTextComponentView.this);

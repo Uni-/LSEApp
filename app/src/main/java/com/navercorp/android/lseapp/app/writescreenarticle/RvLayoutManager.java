@@ -7,7 +7,7 @@ import android.view.View;
 /**
  * Created by NAVER on 2017-08-04.
  */
-public class RvLayoutManager extends LinearLayoutManager {
+public final class RvLayoutManager extends LinearLayoutManager {
 
     public RvLayoutManager(Context context) {
         super(context);

@@ -2,7 +2,6 @@ package com.navercorp.android.lseapp.widget;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
@@ -43,7 +42,7 @@ public class WindowBottomBarView
     private int mTextFontSize;
     private int mTextColor;
 
-    private ActionListener mActionListener;
+    private ActionHandler mActionHandler;
 
     public WindowBottomBarView(Context context) {
         super(context);
@@ -64,10 +63,7 @@ public class WindowBottomBarView
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.view_window_bottom_bar_button_title_background: {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                getContext().startActivity(intent); ;
+                // TODO
                 break;
             }
             case R.id.view_window_bottom_bar_checkbox_text_bold: {
@@ -126,8 +122,8 @@ public class WindowBottomBarView
         dispatchTextFontSizeChange();
     }
 
-    public void setActionListener(ActionListener actionListener) {
-        mActionListener = actionListener;
+    public void setActionListener(ActionHandler actionHandler) {
+        mActionHandler = actionHandler;
     }
 
     public void updateButtons(DocumentComponentValue componentValue, Interval interval) {
@@ -190,42 +186,42 @@ public class WindowBottomBarView
     }
 
     private void dispatchTextBoldChange() {
-        if (mActionListener != null) {
-            mActionListener.onTextPropertyChange(TextProperty.BOLD, mTextBold);
+        if (mActionHandler != null) {
+            mActionHandler.onTextPropertyChange(TextProperty.BOLD, mTextBold);
         }
     }
 
     private void dispatchTextItalicChange() {
-        if (mActionListener != null) {
-            mActionListener.onTextPropertyChange(TextProperty.ITALIC, mTextItalic);
+        if (mActionHandler != null) {
+            mActionHandler.onTextPropertyChange(TextProperty.ITALIC, mTextItalic);
         }
     }
 
     private void dispatchTextUnderlineChange() {
-        if (mActionListener != null) {
-            mActionListener.onTextPropertyChange(TextProperty.UNDERLINE, mTextUnderline);
+        if (mActionHandler != null) {
+            mActionHandler.onTextPropertyChange(TextProperty.UNDERLINE, mTextUnderline);
         }
     }
 
     private void dispatchTextFontSizeChange() {
-        if (mActionListener != null) {
-            mActionListener.onTextPropertyChange(TextProperty.SIZE, mTextFontSize);
+        if (mActionHandler != null) {
+            mActionHandler.onTextPropertyChange(TextProperty.SIZE, mTextFontSize);
         }
     }
 
     private void dispatchTextColorChange() {
-        if (mActionListener != null) {
-            mActionListener.onTextPropertyChange(TextProperty.COLOR, mTextColor);
+        if (mActionHandler != null) {
+            mActionHandler.onTextPropertyChange(TextProperty.COLOR, mTextColor);
         }
     }
 
     private void dispatchRemoveComponent() {
-        if (mActionListener != null) {
-            mActionListener.onRemoveComponent();
+        if (mActionHandler != null) {
+            mActionHandler.onRemoveComponent();
         }
     }
 
-    public interface ActionListener {
+    public interface ActionHandler {
         void onTextPropertyChange(TextProperty textProperty, Object o);
 
         void onRemoveComponent();

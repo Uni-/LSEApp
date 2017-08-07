@@ -18,6 +18,8 @@ public class DocumentComponentValueFactory {
                 return new DocumentTitleValue();
             case TEXT:
                 return new DocumentTextValue();
+            case IMAGE:
+                return new DocumentImageStripValue();
             default: // TODO
                 return null;
         }

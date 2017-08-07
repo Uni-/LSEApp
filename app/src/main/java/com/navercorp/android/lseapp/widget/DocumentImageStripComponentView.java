@@ -1,82 +1,70 @@
 package com.navercorp.android.lseapp.widget;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.navercorp.android.lseapp.R;
 import com.navercorp.android.lseapp.model.DocumentComponentType;
-import com.navercorp.android.lseapp.model.DocumentTitleValue;
+import com.navercorp.android.lseapp.model.DocumentImageStripValue;
 
-public class DocumentTitleComponentView
+public class DocumentImageStripComponentView
         extends RelativeLayout
         implements
-        DocumentComponentView<DocumentTitleComponentView, DocumentTitleValue>,
-        View.OnKeyListener,
+        DocumentComponentView<DocumentImageStripComponentView, DocumentImageStripValue>,
         View.OnFocusChangeListener,
         DocumentComponentModifierView.OnComponentAddListener {
 
-    private AppCompatEditText mEditText;
+    private String mPath;
+    private AppCompatImageView mImageView;
     private DocumentComponentModifierView mComponentAdderView;
 
     private OnEnterKeyListener mOnEnterKeyListener;
     private OnContentFocusChangeListener mOnContentFocusChangeListener;
     private OnInsertComponentListener mOnInsertComponentListener;
 
-    public DocumentTitleComponentView(Context context) {
+    public DocumentImageStripComponentView(Context context) {
         super(context);
         init();
     }
 
-    public DocumentTitleComponentView(Context context, AttributeSet attrs) {
+    public DocumentImageStripComponentView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public DocumentTitleComponentView(Context context, AttributeSet attrs, int defStyle) {
+    public DocumentImageStripComponentView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }
 
     @Override // DocumentComponentView
-    public DocumentTitleComponentView getView() {
+    public DocumentImageStripComponentView getView() {
         return this;
     }
 
     @Override // DocumentComponentView
-    public void setValue(DocumentTitleValue value) {
-        mEditText.setText(value.getText());
+    public void setValue(DocumentImageStripValue value) {
+        mPath = value.getPath();
+        Glide.with(this).load(mPath).into(mImageView);
     }
 
     @Override // DocumentComponentView
-    public DocumentTitleValue getValue() {
-        return new DocumentTitleValue(mEditText.getText().toString());
+    public DocumentImageStripValue getValue() {
+        return new DocumentImageStripValue(mPath);
     }
 
     @Override // DocumentComponentView
     public boolean requestContentFocus() {
-        return mEditText.requestFocus();
+        return mImageView.requestFocus();
     }
 
     @Override // DocumentComponentView
     public void setComponentAdderVisibility(boolean visible) {
         mComponentAdderView.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    @Override // View.OnKeyListener
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-            if (mOnEnterKeyListener != null) {
-                mOnEnterKeyListener.onEnterKey(this);
-            }
-            return true;
-        } else {
-            return false;
-        }
-
     }
 
     @Override // View.OnFocusChangeListener
@@ -106,13 +94,18 @@ public class DocumentTitleComponentView
     }
 
     private void init() {
-        inflate(getContext(), R.layout.view_document_title_component, this);
+        inflate(getContext(), R.layout.view_document_imagestrip_component, this);
 
-        mEditText = (AppCompatEditText) findViewById(R.id.view_document_title_edittext);
-        mComponentAdderView = (DocumentComponentModifierView) findViewById(R.id.view_document_title_document_component_adder);
+        mImageView = (AppCompatImageView) findViewById(R.id.view_document_imagestrip_image);
+        mComponentAdderView = (DocumentComponentModifierView) findViewById(R.id.view_document_imagestrip_document_component_adder);
 
-        mEditText.setOnKeyListener(DocumentTitleComponentView.this);
-        mEditText.setOnFocusChangeListener(DocumentTitleComponentView.this);
-        mComponentAdderView.setOnComponentAddListener(DocumentTitleComponentView.this);
+        mImageView.setOnFocusChangeListener(DocumentImageStripComponentView.this);
+        mComponentAdderView.setOnComponentAddListener(DocumentImageStripComponentView.this);
+        mImageView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImageView.requestFocus();
+            }
+        });
     }
 }

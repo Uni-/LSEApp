@@ -7,21 +7,21 @@
 
     <Button
         android:id="@+id/view_document_component_adder_text"
-        android:layout_width="24dp"
+        android:layout_width="48dp"
         android:layout_height="24dp"
         android:padding="0dp"
         android:text="@string/view_document_component_adder_text" />
 
     <Button
         android:id="@+id/view_document_component_adder_image"
-        android:layout_width="24dp"
+        android:layout_width="48dp"
         android:layout_height="24dp"
         android:padding="0dp"
         android:text="@string/view_document_component_adder_image" />
 
     <Button
         android:id="@+id/view_document_component_adder_map"
-        android:layout_width="24dp"
+        android:layout_width="48dp"
         android:layout_height="24dp"
         android:padding="0dp"
         android:text="@string/view_document_component_adder_map" />

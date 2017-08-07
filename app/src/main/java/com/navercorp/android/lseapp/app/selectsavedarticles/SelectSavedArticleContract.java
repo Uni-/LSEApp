@@ -7,7 +7,7 @@ import com.navercorp.android.lseapp.base.BaseView;
  * Created by NAVER on 2017-07-20.
  */
 
-public interface SelectSavedArticlesContract {
+public interface SelectSavedArticleContract {
 
     interface View extends BaseView {
     }

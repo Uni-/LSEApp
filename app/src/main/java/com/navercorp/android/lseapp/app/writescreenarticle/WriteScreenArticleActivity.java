@@ -1,5 +1,6 @@
 package com.navercorp.android.lseapp.app.writescreenarticle;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -10,18 +11,16 @@ import android.view.MenuItem;
 import android.view.ViewTreeObserver;
 
 import com.navercorp.android.lseapp.R;
+import com.navercorp.android.lseapp.app.selectsavedarticles.SelectSavedArticleActivity;
 import com.navercorp.android.lseapp.model.DocumentComponentType;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
 import com.navercorp.android.lseapp.model.DocumentTextValue;
-import com.navercorp.android.lseapp.model.ScreenArticle;
 import com.navercorp.android.lseapp.model.TextProperty;
 import com.navercorp.android.lseapp.util.Interval;
 import com.navercorp.android.lseapp.util.ListChange;
 import com.navercorp.android.lseapp.widget.DocumentComponentView;
 import com.navercorp.android.lseapp.widget.DocumentTextComponentView;
 import com.navercorp.android.lseapp.widget.WindowBottomBarView;
-
-import java.util.List;
 
 public final class WriteScreenArticleActivity
         extends AppCompatActivity
@@ -31,7 +30,7 @@ public final class WriteScreenArticleActivity
         DocumentComponentView.OnContentFocusChangeListener,
         DocumentComponentView.OnInsertComponentListener,
         DocumentTextComponentView.OnContentSelectionChangeListener,
-        WindowBottomBarView.ActionListener {
+        WindowBottomBarView.ActionHandler {
 
     private WriteScreenArticleContract.Presenter mPresenter;
 
@@ -40,6 +39,11 @@ public final class WriteScreenArticleActivity
     private RvLayoutManager mRvLayoutManager;
 
     private WindowBottomBarView mBottomBarView;
+
+    private OnSelectImageHandler mOnSelectImageHandler;
+
+    private static final int REQUEST_SELECT_IMAGE = 5557;
+    private static final int REQUEST_SELECT_SAVED_ARTICLE = 5558;
 
     @Override // AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,8 @@ public final class WriteScreenArticleActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_main_load: {
+                Intent intent = new Intent(WriteScreenArticleActivity.this, SelectSavedArticleActivity.class);
+                startActivityForResult(intent, REQUEST_SELECT_SAVED_ARTICLE);
                 return true;
             }
             case R.id.menu_main_save: {
@@ -92,6 +98,28 @@ public final class WriteScreenArticleActivity
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override // AppCompatActivity
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_SELECT_IMAGE: {
+                if (resultCode == AppCompatActivity.RESULT_OK) {
+                    mOnSelectImageHandler.onSelectImageOk(data.getDataString());
+                } else if ( resultCode == AppCompatActivity.RESULT_CANCELED) {
+                    mOnSelectImageHandler.onSelectImageCancel();
+                }
+            }
+            default: {
+                super.onActivityResult(requestCode, resultCode, data);
+                break;
+            }
+        }
+    }
+
+    @Override // WriteScreenArticleContract.View
+    public WriteScreenArticleContract.Presenter getPresenter() {
+        return mPresenter;
     }
 
     @Override // DocumentComponentView.OnEnterKeyListener
@@ -136,7 +164,7 @@ public final class WriteScreenArticleActivity
         mBottomBarView.updateButtons(v.getValue(), interval);
     }
 
-    @Override // WindowBottomBarView.ActionListener
+    @Override // WindowBottomBarView.ActionHandler
     public void onTextPropertyChange(TextProperty textProperty, Object o) {
         DocumentTextComponentView textView = (DocumentTextComponentView) mRvLayoutManager.getFocusedChild();
         if (textView == null) {
@@ -146,7 +174,7 @@ public final class WriteScreenArticleActivity
         textView.setSelectedTextProperty(textProperty, o);
     }
 
-    @Override // WindowBottomBarView.ActionListener
+    @Override // WindowBottomBarView.ActionHandler
     public void onRemoveComponent() {
         int index = mRvLayoutManager.indexOf(mRvLayoutManager.getFocusedChild());
         if (index == -1) {
@@ -154,10 +182,6 @@ public final class WriteScreenArticleActivity
         }
 
         mRvAdapter.removeItem(index, true);
-    }
-
-    private ScreenArticle getArticle() {
-        return mPresenter.getArticle();
     }
 
     private void valuesChanged() {
@@ -214,7 +238,15 @@ public final class WriteScreenArticleActivity
         }
     }
 
-    public boolean createIfNotExistsFirstText() {
+    public void startSelectImage(OnSelectImageHandler onSelectImageHandler) {
+        mOnSelectImageHandler = onSelectImageHandler;
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, REQUEST_SELECT_IMAGE);
+    }
+
+    private boolean createIfNotExistsFirstText() {
         if (mRvAdapter.getItemCount() > 1) {
             if (mRvAdapter.getItem(1).componentType() != DocumentComponentType.TEXT) {
                 mRvAdapter.addItem(1, DocumentComponentType.TEXT, true);
@@ -274,8 +306,8 @@ public final class WriteScreenArticleActivity
         }
     }
 
-    public List<DocumentComponentValue> getComponentsList() {
-        return getArticle().getComponentsList();
+    public interface OnSelectImageHandler {
+        void onSelectImageOk(String path);
+        void onSelectImageCancel();
     }
-
 }

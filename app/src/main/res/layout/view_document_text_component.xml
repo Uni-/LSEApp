@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <com.navercorp.android.lseapp.widget.SensitiveEditText
-        android:id="@+id/view_document_text_edit_text"
+        android:id="@+id/view_document_text_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/component_background_pad"
         android:scrollHorizontally="false" />
 
-    <com.navercorp.android.lseapp.widget.DocumentComponentAdderView
+    <com.navercorp.android.lseapp.widget.DocumentComponentModifierView
         android:id="@+id/view_document_text_document_component_adder"
+        android:layout_below="@+id/view_document_text_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="invisible" />
 
-</LinearLayout>
+</RelativeLayout>

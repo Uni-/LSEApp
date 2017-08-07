@@ -7,7 +7,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
  * Created by NAVER on 2017-08-04.
  */
 
-public class RvItemTouchHelperCallback extends ItemTouchHelper.Callback {
+public final class RvItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private RvAdapter mRvAdapter;
 

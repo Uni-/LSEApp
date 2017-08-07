@@ -9,7 +9,7 @@ import android.widget.RelativeLayout;
 import com.navercorp.android.lseapp.R;
 import com.navercorp.android.lseapp.model.DocumentComponentType;
 
-public class DocumentComponentAdderView extends RelativeLayout implements View.OnClickListener {
+public class DocumentComponentModifierView extends RelativeLayout implements View.OnClickListener {
 
     private Button mAddTextButton;
     private Button mAddImageButton;
@@ -17,17 +17,17 @@ public class DocumentComponentAdderView extends RelativeLayout implements View.O
 
     private OnComponentAddListener mOnComponentAddListener;
 
-    public DocumentComponentAdderView(Context context) {
+    public DocumentComponentModifierView(Context context) {
         super(context);
         init();
     }
 
-    public DocumentComponentAdderView(Context context, AttributeSet attrs) {
+    public DocumentComponentModifierView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public DocumentComponentAdderView(Context context, AttributeSet attrs, int defStyle) {
+    public DocumentComponentModifierView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init();
     }

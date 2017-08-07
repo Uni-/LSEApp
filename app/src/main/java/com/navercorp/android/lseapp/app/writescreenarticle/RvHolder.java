@@ -7,7 +7,7 @@ import com.navercorp.android.lseapp.widget.DocumentComponentView;
 /**
  * Created by NAVER on 2017-08-04.
  */
-public class RvHolder extends RecyclerView.ViewHolder {
+public final class RvHolder extends RecyclerView.ViewHolder {
 
     private DocumentComponentView mView;
 
