@@ -5,9 +5,8 @@ import android.view.ViewGroup;
 
 import com.navercorp.android.lseapp.model.DocumentComponentType;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
-import com.navercorp.android.lseapp.model.DocumentComponentValueFactory;
-import com.navercorp.android.lseapp.model.DocumentImageStripValue;
 import com.navercorp.android.lseapp.util.ListChange;
+import com.navercorp.android.lseapp.util.NotifyPolicy;
 import com.navercorp.android.lseapp.widget.DocumentComponentView;
 import com.navercorp.android.lseapp.widget.DocumentComponentViewFactory;
 import com.navercorp.android.lseapp.widget.DocumentImageStripComponentView;
@@ -21,12 +20,10 @@ public final class RvAdapter extends RecyclerView.Adapter<RvHolder> {
 
     private final WriteScreenArticleActivity mActivity;
     private final DocumentComponentViewFactory mItemViewFactory;
-    private final DocumentComponentValueFactory mItemValueFactory;
 
     public RvAdapter(WriteScreenArticleActivity activity) {
         mActivity = activity;
         mItemViewFactory = new DocumentComponentViewFactory(activity);
-        mItemValueFactory = new DocumentComponentValueFactory();
     }
 
     @Override
@@ -37,14 +34,14 @@ public final class RvAdapter extends RecyclerView.Adapter<RvHolder> {
 
         switch (type) {
             case TITLE: {
-                DocumentTitleComponentView titleView = (DocumentTitleComponentView) view;
+                final DocumentTitleComponentView titleView = (DocumentTitleComponentView) view;
                 titleView.setOnEnterKeyListener(mActivity);
                 titleView.setOnContentFocusChangeListener(mActivity);
                 titleView.setOnInsertComponentListener(mActivity);
                 break;
             }
             case TEXT: {
-                DocumentTextComponentView textView = (DocumentTextComponentView) view;
+                final DocumentTextComponentView textView = (DocumentTextComponentView) view;
                 textView.setOnContentFocusChangeListener(mActivity);
                 textView.setOnContentSelectionChangeListener(mActivity);
                 textView.setOnInsertComponentListener(mActivity);
@@ -54,17 +51,6 @@ public final class RvAdapter extends RecyclerView.Adapter<RvHolder> {
                 final DocumentImageStripComponentView imageStripView = (DocumentImageStripComponentView) view;
                 imageStripView.setOnContentFocusChangeListener(mActivity);
                 imageStripView.setOnInsertComponentListener(mActivity);
-                mActivity.startSelectImage(new WriteScreenArticleActivity.OnSelectImageHandler() {
-                    @Override
-                    public void onSelectImageOk(String path) {
-                        imageStripView.setValue(new DocumentImageStripValue(path));
-                    }
-
-                    @Override
-                    public void onSelectImageCancel() {
-                        // TODO
-                    }
-                });
             }
             default:
         }
@@ -88,10 +74,8 @@ public final class RvAdapter extends RecyclerView.Adapter<RvHolder> {
         final DocumentComponentView view = holder.getView();
 
         if (index != -1) {
-            // usage of replaceItem(notifyStrictOrLazy=false),
-            // because notify() function series must not be called in scroll of RecyclerView
-            // and inner focus movement makes RecyclerView scroll
-            replaceItem(index, view.getValue(), false);
+            // usage of NotifyPolicy.NEVER
+            replaceItem(index, view.getValue(), NotifyPolicy.NEVER);
             view.setComponentAdderVisibility(false);
         }
     }
@@ -106,31 +90,59 @@ public final class RvAdapter extends RecyclerView.Adapter<RvHolder> {
         return getItem(position).componentType().ordinal();
     }
 
-    public DocumentComponentValue getItem(int index) {
+    protected DocumentComponentValue getItem(int index) {
         return mActivity.getPresenter().getComponentValueItem(index);
     }
 
-    public void addItem(int index, DocumentComponentValue value, boolean notifyStrictOrLazy) {
+    protected void addItem(int index, DocumentComponentValue value, NotifyPolicy notifyPolicy) {
         mActivity.getPresenter().addComponentValueItem(index, value);
-        mActivity.valuesChanged(new ListChange.Insert(index), notifyStrictOrLazy);
+        switch (notifyPolicy) {
+            case STRICT:
+                mActivity.valuesChanged(new ListChange.Insert(index), true);
+                break;
+            case LAZY:
+                mActivity.valuesChanged(new ListChange.Insert(index), false);
+                break;
+            default:
+        }
     }
 
-    public void addItem(int index, DocumentComponentType type, boolean notifyStrictOrLazy) {
-        addItem(index, mItemValueFactory.create(type), notifyStrictOrLazy);
-    }
-
-    public void removeItem(int index, boolean notifyStrictOrLazy) {
+    protected void removeItem(int index, NotifyPolicy notifyPolicy) {
         mActivity.getPresenter().removeComponentValueItem(index);
-        mActivity.valuesChanged(new ListChange.Delete(index), notifyStrictOrLazy);
+        switch (notifyPolicy) {
+            case STRICT:
+                mActivity.valuesChanged(new ListChange.Delete(index), true);
+                break;
+            case LAZY:
+                mActivity.valuesChanged(new ListChange.Delete(index), false);
+                break;
+            default:
+        }
     }
 
-    public void replaceItem(int index, DocumentComponentValue value, boolean notifyStrictOrLazy) {
+    protected void replaceItem(int index, DocumentComponentValue value, NotifyPolicy notifyPolicy) {
         mActivity.getPresenter().replaceComponentValueItem(index, value);
-        mActivity.valuesChanged(new ListChange.Replace(index), notifyStrictOrLazy);
+        switch (notifyPolicy) {
+            case STRICT:
+                mActivity.valuesChanged(new ListChange.Replace(index), true);
+                break;
+            case LAZY:
+                mActivity.valuesChanged(new ListChange.Replace(index), false);
+                break;
+            default:
+        }
     }
 
-    public void moveItem(int fromIndex, int toIndex, boolean notifyStrictOrLazy) {
+    protected void moveItem(int fromIndex, int toIndex, NotifyPolicy notifyPolicy) {
         mActivity.getPresenter().moveComponentValueItem(fromIndex, toIndex);
-        mActivity.valuesChanged(new ListChange.Move(fromIndex, toIndex), notifyStrictOrLazy);
+        switch (notifyPolicy) {
+            case STRICT:
+                mActivity.valuesChanged(new ListChange.Move(fromIndex, toIndex), true);
+                break;
+            case LAZY:
+                mActivity.valuesChanged(new ListChange.Move(fromIndex, toIndex), false);
+                break;
+            default:
+        }
     }
 }

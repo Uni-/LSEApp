@@ -3,6 +3,8 @@ package com.navercorp.android.lseapp.app.writescreenarticle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
+import com.navercorp.android.lseapp.util.NotifyPolicy;
+
 /**
  * Created by NAVER on 2017-08-04.
  */
@@ -26,7 +28,7 @@ public final class RvItemTouchHelperCallback extends ItemTouchHelper.Callback {
             return false;
         }
 
-        mRvAdapter.moveItem(viewHolder.getAdapterPosition(), target.getAdapterPosition(), true);
+        mRvAdapter.moveItem(viewHolder.getAdapterPosition(), target.getAdapterPosition(), NotifyPolicy.STRICT);
         return true;
     }
 

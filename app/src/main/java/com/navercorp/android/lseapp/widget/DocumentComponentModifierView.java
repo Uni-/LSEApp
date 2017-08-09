@@ -33,7 +33,7 @@ public class DocumentComponentModifierView extends RelativeLayout implements Vie
     }
 
     private void init() {
-        inflate(getContext(), R.layout.view_document_component_adder, this);
+        inflate(getContext(), R.layout.view_document_component_modifier, this);
 
         mAddTextButton = (Button) findViewById(R.id.view_document_component_adder_text);
         mAddImageButton = (Button) findViewById(R.id.view_document_component_adder_image);

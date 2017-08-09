@@ -33,7 +33,7 @@ public class Interval implements Comparable<Interval> {
 
     @Override // Object
     public boolean equals(Object obj) {
-        return (this == obj) || (obj instanceof Interval) && (mLeftBound == ((Interval) obj).mLeftBound && mRightBound == ((Interval) obj).mRightBound);
+        return (this == obj) || (obj instanceof Interval) && (mLeftBound == ((Interval) obj).mLeftBound) && (mRightBound == ((Interval) obj).mRightBound);
     }
 
     @Override // Object

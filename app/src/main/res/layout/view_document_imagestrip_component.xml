@@ -4,25 +4,49 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/view_document_imagestrip_image"
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/view_document_imagestrip_images"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:adjustViewBounds="true"
         android:background="@drawable/component_background_nopad"
         android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:minHeight="192dp"
-        android:scaleType="fitXY"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:focusableInTouchMode="true">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/view_document_imagestrip_image_0"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:minHeight="192dp"
+            android:scaleType="fitXY" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/view_document_imagestrip_image_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:minHeight="192dp"
+            android:scaleType="fitXY" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/view_document_imagestrip_image_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:minHeight="192dp"
+            android:scaleType="fitXY" />
+    </android.support.v7.widget.LinearLayoutCompat>
 
     <com.navercorp.android.lseapp.widget.DocumentComponentModifierView
         android:id="@+id/view_document_imagestrip_document_component_adder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/view_document_imagestrip_image"
+        android:layout_below="@+id/view_document_imagestrip_images"
         android:visibility="invisible" />
 
 </RelativeLayout>

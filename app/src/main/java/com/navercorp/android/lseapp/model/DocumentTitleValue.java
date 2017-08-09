@@ -7,45 +7,64 @@ package com.navercorp.android.lseapp.model;
 public class DocumentTitleValue implements DocumentComponentValue {
 
     private String mText;
+    private String mBackgroundImagePath;
 
     public DocumentTitleValue() {
-        mText = "";
+        this("", "");
     }
 
     public DocumentTitleValue(DocumentTitleValue another) {
-        mText = new String(another.mText);
+        this(another.mText, another.mBackgroundImagePath);
     }
 
     public DocumentTitleValue(String text) {
-        this.mText = text;
+        this(text, "");
     }
 
-    @Override
+    public DocumentTitleValue(String text, String backgroundImagePath) {
+        mText = text;
+        mBackgroundImagePath = backgroundImagePath;
+    }
+
+    @Override // DocumentComponentValue
     public DocumentComponentType componentType() {
         return DocumentComponentType.TITLE;
     }
 
-    @Override
+    @Override // DocumentComponentValue
     public byte[] getDataAsBytes() {
         return mText.getBytes();
     }
 
-    @Override
+    @Override // DocumentComponentValue
     public void setDataFromBytes(byte[] data) {
         mText = new String(data);
     }
 
-    @Override
+    @Override // Object
     public boolean equals(Object obj) {
-        return (this == obj) || (obj instanceof DocumentTitleValue) && (mText.equals(((DocumentTitleValue) obj).mText));
+        return (this == obj) || (obj instanceof DocumentTitleValue) && (mText.equals(((DocumentTitleValue) obj).mText)) && (mBackgroundImagePath.equals(((DocumentTitleValue) obj).mBackgroundImagePath));
     }
 
-    @Override
+    @Override // Object
     public int hashCode() {
-        return 927490 ^ mText.hashCode();
+        return 927490 ^ mText.hashCode() ^ mBackgroundImagePath.hashCode();
+    }
+
+    @Override // Object
+    public String toString() {
+        return String.format("DocumentTitleValue{mText=%s,mBackgroundImagePath=%s}", mText, mBackgroundImagePath);
     }
 
     public String getText() {
         return mText;
+    }
+
+    public String getBackgroundImagePath() {
+        return mBackgroundImagePath;
+    }
+
+    public boolean hasBackgroundImage() {
+        return !mBackgroundImagePath.isEmpty();
     }
 }

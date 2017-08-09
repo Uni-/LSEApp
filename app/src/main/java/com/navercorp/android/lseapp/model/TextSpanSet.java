@@ -1,7 +1,6 @@
 package com.navercorp.android.lseapp.model;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.android.internal.util.Predicate;
 import com.navercorp.android.lseapp.util.Interval;

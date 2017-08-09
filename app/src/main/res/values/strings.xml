@@ -27,10 +27,13 @@
     <string name="dialog_integer_stepper_cancel">@string/cancel</string>
 
     <string name="view_window_bottom_bar_title_background">◪</string>
+    <string name="view_window_bottom_bar_title_nobackground">◫</string>
     <string name="view_window_bottom_bar_text_bold"><b>B</b></string>
     <string name="view_window_bottom_bar_text_italic"><i>I</i></string>
     <string name="view_window_bottom_bar_text_underline"><u>U</u></string>
     <string name="view_window_bottom_bar_text_size"></string>
     <string name="view_window_bottom_bar_text_color">◐</string>
+    <string name="view_window_bottom_bar_image_merge">↑</string>
+    <string name="view_window_bottom_bar_image_split">↓</string>
     <string name="view_window_bottom_bar_component_remove">×</string>
 </resources>

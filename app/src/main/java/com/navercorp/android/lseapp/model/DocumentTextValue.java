@@ -3,9 +3,6 @@ package com.navercorp.android.lseapp.model;
 import com.android.internal.util.Predicate;
 import com.navercorp.android.lseapp.util.Interval;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by NAVER on 2017-07-21.
  */
@@ -33,29 +30,34 @@ public class DocumentTextValue implements DocumentComponentValue {
         mTextSpanSet = new TextSpanSet(TextSpanSet);
     }
 
-    @Override
+    @Override // DocumentComponentValue
     public DocumentComponentType componentType() {
         return DocumentComponentType.TEXT;
     }
 
-    @Override
+    @Override // DocumentComponentValue
     public byte[] getDataAsBytes() {
         return mText.getBytes();
     }
 
-    @Override
+    @Override // DocumentComponentValue
     public void setDataFromBytes(byte[] data) {
         mText = new String(data);
     }
 
-    @Override
+    @Override // Object
     public boolean equals(Object obj) {
         return (this == obj) || (obj instanceof DocumentTextValue) && (mText.equals(((DocumentTextValue) obj).mText)) && mTextSpanSet.equals(((DocumentTextValue) obj).mTextSpanSet);
     }
 
-    @Override
+    @Override // Object
     public int hashCode() {
         return 855621 ^ mText.hashCode() ^ mTextSpanSet.hashCode();
+    }
+
+    @Override // Object
+    public String toString() {
+        return String.format("DocumentTextValue{mText=%s,mTextSpanSet}", mText, mTextSpanSet.toString());
     }
 
     public String getText() {

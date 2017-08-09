@@ -8,19 +8,24 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewTreeObserver;
+import android.view.View;
 
 import com.navercorp.android.lseapp.R;
 import com.navercorp.android.lseapp.app.selectsavedarticles.SelectSavedArticleActivity;
 import com.navercorp.android.lseapp.model.DocumentComponentType;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
+import com.navercorp.android.lseapp.model.DocumentImageStripValue;
 import com.navercorp.android.lseapp.model.DocumentTextValue;
+import com.navercorp.android.lseapp.model.DocumentTitleValue;
 import com.navercorp.android.lseapp.model.TextProperty;
 import com.navercorp.android.lseapp.util.Interval;
 import com.navercorp.android.lseapp.util.ListChange;
+import com.navercorp.android.lseapp.util.NotifyPolicy;
 import com.navercorp.android.lseapp.widget.DocumentComponentView;
+import com.navercorp.android.lseapp.widget.DocumentImageStripComponentView;
 import com.navercorp.android.lseapp.widget.DocumentTextComponentView;
-import com.navercorp.android.lseapp.widget.WindowBottomBarView;
+import com.navercorp.android.lseapp.widget.DocumentTitleComponentView;
+import com.navercorp.android.lseapp.widget.FooterControlPanelView;
 
 public final class WriteScreenArticleActivity
         extends AppCompatActivity
@@ -30,7 +35,7 @@ public final class WriteScreenArticleActivity
         DocumentComponentView.OnContentFocusChangeListener,
         DocumentComponentView.OnInsertComponentListener,
         DocumentTextComponentView.OnContentSelectionChangeListener,
-        WindowBottomBarView.ActionHandler {
+        FooterControlPanelView.ActionHandler {
 
     private WriteScreenArticleContract.Presenter mPresenter;
 
@@ -38,7 +43,7 @@ public final class WriteScreenArticleActivity
     private RvAdapter mRvAdapter;
     private RvLayoutManager mRvLayoutManager;
 
-    private WindowBottomBarView mBottomBarView;
+    private FooterControlPanelView mFooterControlPanelView;
 
     private OnSelectImageHandler mOnSelectImageHandler;
 
@@ -52,7 +57,7 @@ public final class WriteScreenArticleActivity
         setContentView(R.layout.activity_write_screen_article);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.activity_write_screen_article_recyclerview);
-        mBottomBarView = (WindowBottomBarView) findViewById(R.id.activity_write_screen_article_bottombarview);
+        mFooterControlPanelView = (FooterControlPanelView) findViewById(R.id.activity_write_screen_article_bottombarview);
 
         mRvAdapter = new RvAdapter(WriteScreenArticleActivity.this);
         mRvLayoutManager = new RvLayoutManager(WriteScreenArticleActivity.this);
@@ -61,12 +66,12 @@ public final class WriteScreenArticleActivity
         RvItemTouchHelperCallback callback = new RvItemTouchHelperCallback(mRvAdapter);
         new ItemTouchHelper(callback).attachToRecyclerView(mRecyclerView);
 
-        mBottomBarView.setActionListener(this);
+        mFooterControlPanelView.setActionListener(this);
 
         mPresenter = new WriteScreenArticlePresenter(WriteScreenArticleActivity.this);
         mPresenter.start();
 
-        mRvAdapter.addItem(0, DocumentComponentType.TITLE, true);
+        mRvAdapter.addItem(0, new DocumentTitleValue(), NotifyPolicy.STRICT);
     }
 
     @Override // AppCompatActivity
@@ -106,7 +111,7 @@ public final class WriteScreenArticleActivity
             case REQUEST_SELECT_IMAGE: {
                 if (resultCode == AppCompatActivity.RESULT_OK) {
                     mOnSelectImageHandler.onSelectImageOk(data.getDataString());
-                } else if ( resultCode == AppCompatActivity.RESULT_CANCELED) {
+                } else if (resultCode == AppCompatActivity.RESULT_CANCELED) {
                     mOnSelectImageHandler.onSelectImageCancel();
                 }
             }
@@ -139,10 +144,16 @@ public final class WriteScreenArticleActivity
         }
 
         if (!hasFocus) {
-            mRvAdapter.replaceItem(index, v.getValue(), false);
-        }
+            // usage of NotifyPolicy.LAZY
+            mRvAdapter.replaceItem(index, v.getValue(), NotifyPolicy.LAZY);
 
-        mBottomBarView.updateButtons(v.getValue(), new Interval());
+//            mFooterControlPanelView.updateButtons(null, null);
+        } else {
+            DocumentComponentValue value = v.getValue();
+            DocumentComponentView nextView = ((DocumentComponentView) mRvLayoutManager.findViewByPosition(index + 1));
+            DocumentComponentValue nextValue = nextView != null ? nextView.getValue() : null;
+            mFooterControlPanelView.updateButtonsVisibility(value, nextValue);
+        }
 
         afterSetFocus(index, hasFocus);
     }
@@ -154,14 +165,68 @@ public final class WriteScreenArticleActivity
             return;
         }
 
-        mRvAdapter.addItem(index + 1, componentType, true);
+        switch (componentType) {
+            case TEXT: {
+                DocumentTextValue textValue = new DocumentTextValue();
+                mRvAdapter.addItem(index + 1, textValue, NotifyPolicy.STRICT);
+                break;
+            }
+            case IMAGE: {
+                startSelectImage(new OnSelectImageHandler() {
+                    @Override
+                    public void onSelectImageOk(String path) {
+                        DocumentImageStripValue imageValue = new DocumentImageStripValue(path);
+                        mRvAdapter.addItem(index + 1, imageValue, NotifyPolicy.STRICT);
+                    }
+
+                    @Override
+                    public void onSelectImageCancel() {
+                        // do nothing
+                    }
+                });
+                break;
+            }
+            case MAP: {
+                // TODO
+            }
+            default:
+        }
 
         requestItemViewContentFocusAt(index + 1, false);
     }
 
     @Override // DocumentTextComponentView.OnContentSelectionChangeListener
     public void onContentSelectionChange(DocumentTextComponentView v, Interval interval) {
-        mBottomBarView.updateButtons(v.getValue(), interval);
+        DocumentComponentValue value = v.getValue();
+        mFooterControlPanelView.updateButtonsValue(value, interval);
+    }
+
+    @Override // WindowBottomBarView.ActionHandler
+    public void onTitleBackgroundSelect() {
+        startSelectImage(new OnSelectImageHandler() {
+            @Override
+            public void onSelectImageOk(String path) {
+                DocumentTitleValue titleValueBefore = (DocumentTitleValue) mRvAdapter.getItem(0);
+                DocumentTitleValue titleValue = new DocumentTitleValue(titleValueBefore.getText(), path);
+                DocumentTitleComponentView titleView = (DocumentTitleComponentView) mRvLayoutManager.findViewByPosition(0);
+                titleView.setValue(titleValue);
+                mRvAdapter.replaceItem(0, titleValue, NotifyPolicy.STRICT);
+            }
+
+            @Override
+            public void onSelectImageCancel() {
+                // do nothing
+            }
+        });
+    }
+
+    @Override
+    public void onTitleBackgroundRemove() {
+        DocumentTitleValue titleValueBefore = (DocumentTitleValue) mRvAdapter.getItem(0);
+        DocumentTitleValue titleValue = new DocumentTitleValue(titleValueBefore.getText());
+        DocumentTitleComponentView titleView = (DocumentTitleComponentView) mRvLayoutManager.findViewByPosition(0);
+        titleView.setValue(titleValue);
+        mRvAdapter.replaceItem(0, titleValue, NotifyPolicy.STRICT);
     }
 
     @Override // WindowBottomBarView.ActionHandler
@@ -176,28 +241,63 @@ public final class WriteScreenArticleActivity
 
     @Override // WindowBottomBarView.ActionHandler
     public void onRemoveComponent() {
-        int index = mRvLayoutManager.indexOf(mRvLayoutManager.getFocusedChild());
+        View view = mRvLayoutManager.getFocusedChild();
+        if (view == null) {
+            return;
+        }
+        int index = mRvLayoutManager.indexOf(view);
         if (index == -1) {
             return;
         }
 
-        mRvAdapter.removeItem(index, true);
+        mRvAdapter.removeItem(index, NotifyPolicy.STRICT);
+    }
+
+    @Override // WindowBottomBarView.ActionHandler
+    public void onImageStripMerge() {
+        DocumentImageStripComponentView view = (DocumentImageStripComponentView) mRvLayoutManager.getFocusedChild();
+        int index = mRvLayoutManager.indexOf(view.getView());
+        DocumentImageStripComponentView nextView = (DocumentImageStripComponentView) mRvLayoutManager.findViewByPosition(index + 1);
+        if (nextView == null) {
+            return; // TODO: FIXIT: should be unreachable, but is reachable
+        }
+        DocumentImageStripValue value = view.getValue();
+        DocumentImageStripValue nextValue = nextView.getValue();
+        if (value.count() == 1) {
+            view.setValue(new DocumentImageStripValue(value.getImagePath0(), nextValue.getImagePath0()));
+            mRvAdapter.removeItem(index + 1, NotifyPolicy.STRICT);
+        } else if (value.count() == 2) {
+            view.setValue(new DocumentImageStripValue(value.getImagePath0(), value.getImagePath1(), nextValue.getImagePath0()));
+            mRvAdapter.removeItem(index + 1, NotifyPolicy.STRICT);
+        }
+    }
+
+    @Override // WindowBottomBarView.ActionHandler
+    public void onImageStripSplit() {
+        DocumentImageStripComponentView view = (DocumentImageStripComponentView) mRvLayoutManager.getFocusedChild();
+        int index = mRvLayoutManager.indexOf(view.getView());
+        DocumentImageStripValue value = view.getValue();
+        if (value.count() == 3) {
+            view.setValue(new DocumentImageStripValue(value.getImagePath0(), value.getImagePath1()));
+            mRvAdapter.addItem(index + 1, new DocumentImageStripValue(value.getImagePath2()), NotifyPolicy.STRICT);
+        } else if (value.count() == 2) {
+            view.setValue(new DocumentImageStripValue(value.getImagePath0()));
+            mRvAdapter.addItem(index + 1, new DocumentImageStripValue(value.getImagePath1()), NotifyPolicy.STRICT);
+        }
     }
 
     private void valuesChanged() {
         mRvAdapter.notifyDataSetChanged();
-        mRvLayoutManager.onItemsChanged(mRecyclerView);
     }
 
     public void valuesChanged(boolean notifyStrictOrLazy) {
         if (notifyStrictOrLazy) {
             valuesChanged();
         } else {
-            mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            mRecyclerView.post(new Runnable() {
                 @Override
-                public void onGlobalLayout() {
+                public void run() {
                     valuesChanged();
-                    mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
             });
         }
@@ -207,20 +307,16 @@ public final class WriteScreenArticleActivity
         if (change instanceof ListChange.Insert) {
             int index = ((ListChange.Insert) change).index;
             mRvAdapter.notifyItemInserted(index);
-            mRvLayoutManager.onItemsAdded(mRecyclerView, index, 1);
         } else if (change instanceof ListChange.Delete) {
             int index = ((ListChange.Delete) change).index;
             mRvAdapter.notifyItemRemoved(index);
-            mRvLayoutManager.onItemsRemoved(mRecyclerView, index, 1);
         } else if (change instanceof ListChange.Replace) {
             int index = ((ListChange.Replace) change).index;
             mRvAdapter.notifyItemChanged(index);
-            mRvLayoutManager.onItemsUpdated(mRecyclerView, index, 1);
         } else if (change instanceof ListChange.Move) {
             int fromIndex = ((ListChange.Move) change).fromIndex;
             int toIndex = ((ListChange.Move) change).toIndex;
             mRvAdapter.notifyItemMoved(fromIndex, toIndex);
-            mRvLayoutManager.onItemsMoved(mRecyclerView, fromIndex, toIndex, 1);
         }
     }
 
@@ -228,11 +324,10 @@ public final class WriteScreenArticleActivity
         if (notifyStrictOrLazy) {
             valuesChanged(change);
         } else {
-            mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            mRecyclerView.post(new Runnable() {
                 @Override
-                public void onGlobalLayout() {
+                public void run() {
                     valuesChanged(change);
-                    mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
             });
         }
@@ -249,13 +344,13 @@ public final class WriteScreenArticleActivity
     private boolean createIfNotExistsFirstText() {
         if (mRvAdapter.getItemCount() > 1) {
             if (mRvAdapter.getItem(1).componentType() != DocumentComponentType.TEXT) {
-                mRvAdapter.addItem(1, DocumentComponentType.TEXT, true);
+                mRvAdapter.addItem(1, new DocumentTextValue(), NotifyPolicy.STRICT);
                 return true;
             } else {
                 return false;
             }
         } else {
-            mRvAdapter.addItem(1, DocumentComponentType.TEXT, true); // append
+            mRvAdapter.addItem(1, new DocumentTextValue(), NotifyPolicy.STRICT); // append
             return true;
         }
     }
@@ -270,7 +365,8 @@ public final class WriteScreenArticleActivity
             if (value.componentType() == DocumentComponentType.TEXT) {
                 final DocumentTextValue textValue = (DocumentTextValue) value;
                 if (textValue.isEmpty()) {
-                    mRvAdapter.removeItem(index, true);
+                    // usage of NotifyPolicy.LAZY
+                    mRvAdapter.removeItem(index, NotifyPolicy.LAZY);
                 }
             }
         }
@@ -282,11 +378,10 @@ public final class WriteScreenArticleActivity
         if (requestStrictOrLazy) {
             requestItemViewContentFocusAt(position);
         } else {
-            mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            mRecyclerView.post(new Runnable() {
                 @Override
-                public void onGlobalLayout() {
+                public void run() {
                     requestItemViewContentFocusAt(position);
-                    mRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
             });
         }
@@ -306,8 +401,10 @@ public final class WriteScreenArticleActivity
         }
     }
 
-    public interface OnSelectImageHandler {
+    private interface OnSelectImageHandler {
         void onSelectImageOk(String path);
+
         void onSelectImageCancel();
     }
+
 }

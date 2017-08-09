@@ -14,7 +14,7 @@
         android:background="@android:color/white"
         android:padding="@dimen/activity_write_screen_article_list_padding" />
 
-    <com.navercorp.android.lseapp.widget.WindowBottomBarView
+    <com.navercorp.android.lseapp.widget.FooterControlPanelView
         android:id="@+id/activity_write_screen_article_bottombarview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

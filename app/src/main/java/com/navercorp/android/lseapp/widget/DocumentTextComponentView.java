@@ -10,7 +10,6 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -182,15 +181,6 @@ public class DocumentTextComponentView
 
     @Override // SensitiveEditText.OnSelectionChangeListener
     public void onSelectionChange(int selStart, int selEnd) {
-        Editable editable = mEditText.getText();
-        CharacterStyle[] characterStyles = editable.getSpans(selStart, selEnd, CharacterStyle.class);
-        for (CharacterStyle cs : characterStyles) {
-            Log.v("onSelectionChange", String.format("CharacterStyle %s %d %d", cs.toString(), editable.getSpanStart(cs), editable.getSpanEnd(cs)));
-        }
-        TextSpanSet textSpanSet = getValue().getTextSpans(new Interval(selStart, selEnd));
-        for (TextSpan ts : textSpanSet) {
-            Log.v("onSelectionChange", ts.toString());
-        }
         if (mOnContentSelectionChangeListener != null) {
             mOnContentSelectionChangeListener.onContentSelectionChange(this, new Interval(selStart, selEnd));
         }

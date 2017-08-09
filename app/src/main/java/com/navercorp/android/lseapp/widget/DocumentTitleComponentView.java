@@ -2,11 +2,13 @@ package com.navercorp.android.lseapp.widget;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
 import com.navercorp.android.lseapp.R;
 import com.navercorp.android.lseapp.model.DocumentComponentType;
 import com.navercorp.android.lseapp.model.DocumentTitleValue;
@@ -19,6 +21,9 @@ public class DocumentTitleComponentView
         View.OnFocusChangeListener,
         DocumentComponentModifierView.OnComponentAddListener {
 
+    private String mBackgroundImagePath;
+
+    private AppCompatImageView mBackgroundImageView;
     private AppCompatEditText mEditText;
     private DocumentComponentModifierView mComponentAdderView;
 
@@ -49,11 +54,18 @@ public class DocumentTitleComponentView
     @Override // DocumentComponentView
     public void setValue(DocumentTitleValue value) {
         mEditText.setText(value.getText());
+
+        mBackgroundImagePath = value.getBackgroundImagePath();
+        if (!mBackgroundImagePath.isEmpty()) {
+            Glide.with(getContext()).load(mBackgroundImagePath).into(mBackgroundImageView);
+        } else {
+            mBackgroundImageView.setImageDrawable(null);
+        }
     }
 
     @Override // DocumentComponentView
     public DocumentTitleValue getValue() {
-        return new DocumentTitleValue(mEditText.getText().toString());
+        return new DocumentTitleValue(mEditText.getText().toString(), mBackgroundImagePath);
     }
 
     @Override // DocumentComponentView
@@ -108,6 +120,7 @@ public class DocumentTitleComponentView
     private void init() {
         inflate(getContext(), R.layout.view_document_title_component, this);
 
+        mBackgroundImageView = (AppCompatImageView) findViewById(R.id.view_document_title_image_background);
         mEditText = (AppCompatEditText) findViewById(R.id.view_document_title_edittext);
         mComponentAdderView = (DocumentComponentModifierView) findViewById(R.id.view_document_title_document_component_adder);
 

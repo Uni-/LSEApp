@@ -4,22 +4,34 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/view_document_title_image_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:minHeight="@dimen/view_document_title_component_text_height"
+        android:scaleType="fitXY" />
+
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/view_document_title_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@id/view_document_title_image_background"
+        android:layout_alignBottom="@id/view_document_title_image_background"
+        android:background="@drawable/component_background_pad"
         android:hint="@string/view_document_title_component_text_hint"
         android:minHeight="@dimen/view_document_title_component_text_height"
         android:scrollHorizontally="false"
-        android:background="@drawable/component_background_pad"
         android:scrollbars="vertical"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <com.navercorp.android.lseapp.widget.DocumentComponentModifierView
         android:id="@+id/view_document_title_document_component_adder"
-        android:layout_below="@+id/view_document_title_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/view_document_title_image_background"
+        android:layout_alignParentBottom="true"
         android:visibility="invisible" />
 
 </RelativeLayout>

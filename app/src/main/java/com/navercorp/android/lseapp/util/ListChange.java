@@ -8,11 +8,14 @@ public interface ListChange {
 
     public static enum Type {
         INSERT,
-        REMOVE,
+        DELETE,
         REPLACE,
         MOVE,
-        ;
+        @Deprecated
+        UNUSED;
     }
+
+    public Type type();
 
     public static class Insert implements ListChange {
 
@@ -20,6 +23,11 @@ public interface ListChange {
 
         public Insert(int index) {
             this.index = index;
+        }
+
+        @Override
+        public Type type() {
+            return Type.INSERT;
         }
     }
 
@@ -30,6 +38,11 @@ public interface ListChange {
         public Delete(int index) {
             this.index = index;
         }
+
+        @Override
+        public Type type() {
+            return Type.DELETE;
+        }
     }
 
     public static class Replace implements ListChange {
@@ -38,6 +51,11 @@ public interface ListChange {
 
         public Replace(int index) {
             this.index = index;
+        }
+
+        @Override
+        public Type type() {
+            return Type.REPLACE;
         }
     }
 
@@ -49,6 +67,11 @@ public interface ListChange {
         public Move(int fromIndex, int toIndex) {
             this.fromIndex = fromIndex;
             this.toIndex = toIndex;
+        }
+
+        @Override
+        public Type type() {
+            return Type.MOVE;
         }
     }
 }

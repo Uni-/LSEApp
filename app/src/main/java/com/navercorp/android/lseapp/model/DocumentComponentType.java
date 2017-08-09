@@ -5,12 +5,11 @@ package com.navercorp.android.lseapp.model;
  */
 
 public enum DocumentComponentType {
+    NONE,
     TITLE,
     TEXT,
     IMAGE,
     MAP,
-    ;
-
-    private DocumentComponentType() {
-    }
+    @Deprecated
+    UNUSED;
 }

@@ -2,6 +2,7 @@ package com.navercorp.android.lseapp.widget;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -18,11 +19,14 @@ public class DocumentImageStripComponentView
         View.OnFocusChangeListener,
         DocumentComponentModifierView.OnComponentAddListener {
 
-    private String mPath;
-    private AppCompatImageView mImageView;
+    private DocumentImageStripValue mValue;
+
+    private LinearLayoutCompat mImagesLayout;
+    private AppCompatImageView mImageView0;
+    private AppCompatImageView mImageView1;
+    private AppCompatImageView mImageView2;
     private DocumentComponentModifierView mComponentAdderView;
 
-    private OnEnterKeyListener mOnEnterKeyListener;
     private OnContentFocusChangeListener mOnContentFocusChangeListener;
     private OnInsertComponentListener mOnInsertComponentListener;
 
@@ -48,18 +52,41 @@ public class DocumentImageStripComponentView
 
     @Override // DocumentComponentView
     public void setValue(DocumentImageStripValue value) {
-        mPath = value.getPath();
-        Glide.with(this).load(mPath).into(mImageView);
+        mValue = value;
+
+        String imagePath0 = mValue.getImagePath0();
+        if (!imagePath0.isEmpty()) {
+            Glide.with(getContext()).load(imagePath0).into(mImageView0);
+            mImageView0.setVisibility(View.VISIBLE);
+        } else {
+            mImageView0.setVisibility(View.GONE);
+        }
+
+        String imagePath1 = mValue.getImagePath1();
+        if (!imagePath1.isEmpty()) {
+            Glide.with(getContext()).load(imagePath1).into(mImageView1);
+            mImageView1.setVisibility(View.VISIBLE);
+        } else {
+            mImageView1.setVisibility(View.GONE);
+        }
+
+        String imagePath2 = mValue.getImagePath2();
+        if (!imagePath2.isEmpty()) {
+            Glide.with(getContext()).load(imagePath2).into(mImageView2);
+            mImageView2.setVisibility(View.VISIBLE);
+        } else {
+            mImageView2.setVisibility(View.GONE);
+        }
     }
 
     @Override // DocumentComponentView
     public DocumentImageStripValue getValue() {
-        return new DocumentImageStripValue(mPath);
+        return mValue;
     }
 
     @Override // DocumentComponentView
     public boolean requestContentFocus() {
-        return mImageView.requestFocus();
+        return mImagesLayout.requestFocus();
     }
 
     @Override // DocumentComponentView
@@ -81,10 +108,6 @@ public class DocumentImageStripComponentView
         }
     }
 
-    public void setOnEnterKeyListener(OnEnterKeyListener onEnterKeyListener) {
-        mOnEnterKeyListener = onEnterKeyListener;
-    }
-
     public void setOnContentFocusChangeListener(OnContentFocusChangeListener onContentFocusChangeListener) {
         mOnContentFocusChangeListener = onContentFocusChangeListener;
     }
@@ -96,16 +119,19 @@ public class DocumentImageStripComponentView
     private void init() {
         inflate(getContext(), R.layout.view_document_imagestrip_component, this);
 
-        mImageView = (AppCompatImageView) findViewById(R.id.view_document_imagestrip_image);
+        mImagesLayout = (LinearLayoutCompat) findViewById(R.id.view_document_imagestrip_images);
+        mImageView0 = (AppCompatImageView) findViewById(R.id.view_document_imagestrip_image_0);
+        mImageView1 = (AppCompatImageView) findViewById(R.id.view_document_imagestrip_image_1);
+        mImageView2 = (AppCompatImageView) findViewById(R.id.view_document_imagestrip_image_2);
         mComponentAdderView = (DocumentComponentModifierView) findViewById(R.id.view_document_imagestrip_document_component_adder);
 
-        mImageView.setOnFocusChangeListener(DocumentImageStripComponentView.this);
-        mComponentAdderView.setOnComponentAddListener(DocumentImageStripComponentView.this);
-        mImageView.setOnClickListener(new OnClickListener() {
+        mImagesLayout.setOnFocusChangeListener(DocumentImageStripComponentView.this);
+        mImagesLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mImageView.requestFocus();
+                mImagesLayout.requestFocus();
             }
         });
+        mComponentAdderView.setOnComponentAddListener(DocumentImageStripComponentView.this);
     }
 }

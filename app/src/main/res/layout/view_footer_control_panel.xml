@@ -10,11 +10,19 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/view_window_bottom_bar_button_title_background"
+            android:id="@+id/view_window_bottom_bar_button_title_set_background"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="0dp"
             android:text="@string/view_window_bottom_bar_title_background"
+            android:textAllCaps="false" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/view_window_bottom_bar_button_title_unset_background"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="0dp"
+            android:text="@string/view_window_bottom_bar_title_nobackground"
             android:textAllCaps="false" />
 
         <android.support.v7.widget.AppCompatCheckBox
@@ -50,6 +58,20 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:text="@string/view_window_bottom_bar_text_color"
+            android:textStyle="normal" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/view_window_bottom_button_bar_image_merge"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="@string/view_window_bottom_bar_image_merge"
+            android:textStyle="normal" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/view_window_bottom_button_bar_image_split"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="@string/view_window_bottom_bar_image_split"
             android:textStyle="normal" />
 
         <android.support.v7.widget.AppCompatButton

@@ -19,9 +19,9 @@ public class LocalDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String sqlDropTableArticle = "DROP TABLE IF EXISTS Article;";
+        final String sqlDropTableArticle = "DROP TABLE IF EXISTS ScreenArticle;";
         final String sqlDropTableObject = "DROP TABLE IF EXISTS Object;";
-        final String sqlCreateTableArticle = "CREATE TABLE IF NOT EXISTS Article (UtcTimestamp INTEGER NOT NULL, Type INTEGER NOT NULL, Objects TEXT NOT NULL);";
+        final String sqlCreateTableArticle = "CREATE TABLE IF NOT EXISTS ScreenArticle (UtcTimestamp INTEGER NOT NULL, ObjectRef TEXT NOT NULL);";
         final String sqlCreateTableObject = "CREATE TABLE IF NOT EXISTS Object (Sha1sum TEXT NOT NULL, ContentType INTEGER NOT NULL, ContentValue BLOB NOT NULL);";
 
         db.execSQL(sqlDropTableArticle);
