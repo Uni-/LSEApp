@@ -6,8 +6,13 @@
     <string name="yes">예</string>
     <string name="no">아니오</string>
 
-    <string name="activity_write_screen_article_title">Write</string>
-    <string name="activity_select_saved_articles_title">Select saved</string>
+    <string name="search">검색</string>
+
+    <string name="activity_write_screen_article_title">쓰기</string>
+    <string name="activity_select_saved_articles_title">저장된 글 선택</string>
+    <string name="activity_select_location_search_title">장소 선택 (검색)</string>
+
+    <string name="activity_select_location_search_result_empty">검색 결과가 없습니다.</string>
 
     <string name="view_document_title_component_text_hint">제목</string>
 

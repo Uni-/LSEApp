@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/component_background_pad"
+        android:background="@drawable/component_background_pad_nodefborder"
         android:scrollHorizontally="false" />
 
     <com.navercorp.android.lseapp.widget.DocumentComponentModifierView

@@ -25,7 +25,7 @@ public class DocumentComponentViewFactory {
             case IMAGE:
                 return new DocumentImageStripComponentView(mContext);
             case MAP:
-                // TODO
+                return new DocumentMapComponentView(mContext);
             default:
                 return null;
         }

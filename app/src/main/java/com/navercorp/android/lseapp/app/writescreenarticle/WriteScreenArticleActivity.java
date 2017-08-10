@@ -11,10 +11,12 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.navercorp.android.lseapp.R;
+import com.navercorp.android.lseapp.app.selectlocationsearch.SelectLocationSearchActivity;
 import com.navercorp.android.lseapp.app.selectsavedarticles.SelectSavedArticleActivity;
 import com.navercorp.android.lseapp.model.DocumentComponentType;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
 import com.navercorp.android.lseapp.model.DocumentImageStripValue;
+import com.navercorp.android.lseapp.model.DocumentMapValue;
 import com.navercorp.android.lseapp.model.DocumentTextValue;
 import com.navercorp.android.lseapp.model.DocumentTitleValue;
 import com.navercorp.android.lseapp.model.TextProperty;
@@ -46,9 +48,11 @@ public final class WriteScreenArticleActivity
     private FooterControlPanelView mFooterControlPanelView;
 
     private OnSelectImageHandler mOnSelectImageHandler;
+    private OnSelectLocationHandler mOnSelectLocationHandler;
 
-    private static final int REQUEST_SELECT_IMAGE = 5557;
-    private static final int REQUEST_SELECT_SAVED_ARTICLE = 5558;
+    private static final int REQUEST_SELECT_SAVED_ARTICLE = 5557;
+    private static final int REQUEST_SELECT_IMAGE = 5558;
+    private static final int REQUEST_SELECT_LOCATION = 5559;
 
     @Override // AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,16 +112,33 @@ public final class WriteScreenArticleActivity
     @Override // AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            case REQUEST_SELECT_SAVED_ARTICLE: {
+                // TODO
+                break;
+            }
             case REQUEST_SELECT_IMAGE: {
                 if (resultCode == AppCompatActivity.RESULT_OK) {
-                    mOnSelectImageHandler.onSelectImageOk(data.getDataString());
+                    String path = data.getDataString();
+                    mOnSelectImageHandler.onSelectImageOk(path);
                 } else if (resultCode == AppCompatActivity.RESULT_CANCELED) {
                     mOnSelectImageHandler.onSelectImageCancel();
                 }
+                break;
+            }
+            case REQUEST_SELECT_LOCATION: {
+                if (resultCode == AppCompatActivity.RESULT_OK) {
+                    int locationKatechX = data.getIntExtra(SelectLocationSearchActivity.EXTRA_INT_KEY_LOCATION_KATECH_X, 0);
+                    int locationKatechY = data.getIntExtra(SelectLocationSearchActivity.EXTRA_INT_KEY_LOCATION_KATECH_Y, 0);
+                    String locationTitle = data.getStringExtra(SelectLocationSearchActivity.EXTRA_STRING_KEY_LOCATION_TITLE);
+                    String locationAddress = data.getStringExtra(SelectLocationSearchActivity.EXTRA_STRING_KEY_LOCATION_ADDRESS);
+                    mOnSelectLocationHandler.onSelectLocationOk(locationKatechX, locationKatechY, locationTitle, locationAddress);
+                } else if (resultCode == AppCompatActivity.RESULT_CANCELED) {
+                    mOnSelectLocationHandler.onSelectLocationCancel();
+                }
+                break;
             }
             default: {
                 super.onActivityResult(requestCode, resultCode, data);
-                break;
             }
         }
     }
@@ -144,10 +165,8 @@ public final class WriteScreenArticleActivity
         }
 
         if (!hasFocus) {
-            // usage of NotifyPolicy.LAZY
-            mRvAdapter.replaceItem(index, v.getValue(), NotifyPolicy.LAZY);
-
-//            mFooterControlPanelView.updateButtons(null, null);
+            // usage of NotifyPolicy.NEVER
+            mRvAdapter.replaceItem(index, v.getValue(), NotifyPolicy.NEVER);
         } else {
             DocumentComponentValue value = v.getValue();
             DocumentComponentView nextView = ((DocumentComponentView) mRvLayoutManager.findViewByPosition(index + 1));
@@ -169,6 +188,7 @@ public final class WriteScreenArticleActivity
             case TEXT: {
                 DocumentTextValue textValue = new DocumentTextValue();
                 mRvAdapter.addItem(index + 1, textValue, NotifyPolicy.STRICT);
+                requestItemViewContentFocusAt(index + 1, false);
                 break;
             }
             case IMAGE: {
@@ -177,6 +197,7 @@ public final class WriteScreenArticleActivity
                     public void onSelectImageOk(String path) {
                         DocumentImageStripValue imageValue = new DocumentImageStripValue(path);
                         mRvAdapter.addItem(index + 1, imageValue, NotifyPolicy.STRICT);
+                        requestItemViewContentFocusAt(index + 1, false);
                     }
 
                     @Override
@@ -187,12 +208,22 @@ public final class WriteScreenArticleActivity
                 break;
             }
             case MAP: {
-                // TODO
+                startSelectLocation(new OnSelectLocationHandler() {
+                    @Override
+                    public void onSelectLocationOk(int locationKatechX, int locationKatechY, String locationTitle, String locationAddress) {
+                        DocumentMapValue mapValue = new DocumentMapValue(locationKatechX, locationKatechY, locationTitle, locationAddress);
+                        mRvAdapter.addItem(index + 1, mapValue, NotifyPolicy.STRICT);
+                        requestItemViewContentFocusAt(index + 1, false);
+                    }
+
+                    @Override
+                    public void onSelectLocationCancel() {
+                        // do nothing
+                    }
+                });
             }
             default:
         }
-
-        requestItemViewContentFocusAt(index + 1, false);
     }
 
     @Override // DocumentTextComponentView.OnContentSelectionChangeListener
@@ -220,7 +251,7 @@ public final class WriteScreenArticleActivity
         });
     }
 
-    @Override
+    @Override // WindowBottomBarView.ActionHandler
     public void onTitleBackgroundRemove() {
         DocumentTitleValue titleValueBefore = (DocumentTitleValue) mRvAdapter.getItem(0);
         DocumentTitleValue titleValue = new DocumentTitleValue(titleValueBefore.getText());
@@ -264,11 +295,19 @@ public final class WriteScreenArticleActivity
         DocumentImageStripValue value = view.getValue();
         DocumentImageStripValue nextValue = nextView.getValue();
         if (value.count() == 1) {
-            view.setValue(new DocumentImageStripValue(value.getImagePath0(), nextValue.getImagePath0()));
+            DocumentImageStripValue newCurrValue = new DocumentImageStripValue(value.getImagePath0(), nextValue.getImagePath0());
+            view.setValue(newCurrValue);
             mRvAdapter.removeItem(index + 1, NotifyPolicy.STRICT);
+            DocumentComponentView newNextView = (DocumentComponentView) mRvLayoutManager.findViewByPosition(index + 1);
+            DocumentComponentValue newNextValue = (newNextView != null) ? newNextView.getValue() : null;
+            mFooterControlPanelView.updateButtonsVisibility(newCurrValue, newNextValue);
         } else if (value.count() == 2) {
-            view.setValue(new DocumentImageStripValue(value.getImagePath0(), value.getImagePath1(), nextValue.getImagePath0()));
+            DocumentImageStripValue newCurrValue = new DocumentImageStripValue(value.getImagePath0(), value.getImagePath1(), nextValue.getImagePath0());
+            view.setValue(newCurrValue);
             mRvAdapter.removeItem(index + 1, NotifyPolicy.STRICT);
+            DocumentComponentView newNextView = (DocumentComponentView) mRvLayoutManager.findViewByPosition(index + 1);
+            DocumentComponentValue newNextValue = (newNextView != null) ? newNextView.getValue() : null;
+            mFooterControlPanelView.updateButtonsVisibility(newCurrValue, newNextValue);
         }
     }
 
@@ -278,11 +317,17 @@ public final class WriteScreenArticleActivity
         int index = mRvLayoutManager.indexOf(view.getView());
         DocumentImageStripValue value = view.getValue();
         if (value.count() == 3) {
-            view.setValue(new DocumentImageStripValue(value.getImagePath0(), value.getImagePath1()));
-            mRvAdapter.addItem(index + 1, new DocumentImageStripValue(value.getImagePath2()), NotifyPolicy.STRICT);
+            DocumentImageStripValue newCurrValue = new DocumentImageStripValue(value.getImagePath0(), value.getImagePath1());
+            DocumentImageStripValue newNextValue = new DocumentImageStripValue(value.getImagePath2());
+            view.setValue(newCurrValue);
+            mRvAdapter.addItem(index + 1, newNextValue, NotifyPolicy.STRICT);
+            mFooterControlPanelView.updateButtonsVisibility(newCurrValue, newNextValue);
         } else if (value.count() == 2) {
-            view.setValue(new DocumentImageStripValue(value.getImagePath0()));
-            mRvAdapter.addItem(index + 1, new DocumentImageStripValue(value.getImagePath1()), NotifyPolicy.STRICT);
+            DocumentImageStripValue newCurrValue = new DocumentImageStripValue(value.getImagePath0());
+            DocumentImageStripValue newNextValue = new DocumentImageStripValue(value.getImagePath1());
+            view.setValue(newCurrValue);
+            mRvAdapter.addItem(index + 1, newNextValue, NotifyPolicy.STRICT);
+            mFooterControlPanelView.updateButtonsVisibility(newCurrValue, newNextValue);
         }
     }
 
@@ -333,12 +378,18 @@ public final class WriteScreenArticleActivity
         }
     }
 
-    public void startSelectImage(OnSelectImageHandler onSelectImageHandler) {
+    private void startSelectImage(OnSelectImageHandler onSelectImageHandler) {
         mOnSelectImageHandler = onSelectImageHandler;
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, REQUEST_SELECT_IMAGE);
+    }
+
+    private void startSelectLocation(OnSelectLocationHandler onSelectLocationHandler) {
+        mOnSelectLocationHandler = onSelectLocationHandler;
+        Intent intent = new Intent(WriteScreenArticleActivity.this, SelectLocationSearchActivity.class);
+        startActivityForResult(intent, REQUEST_SELECT_LOCATION);
     }
 
     private boolean createIfNotExistsFirstText() {
@@ -402,9 +453,16 @@ public final class WriteScreenArticleActivity
     }
 
     private interface OnSelectImageHandler {
+
         void onSelectImageOk(String path);
 
         void onSelectImageCancel();
     }
 
+    private interface OnSelectLocationHandler {
+
+        void onSelectLocationOk(int locationKatechX, int locationKatechY, String locationTitle, String locationAddress);
+
+        void onSelectLocationCancel();
+    }
 }

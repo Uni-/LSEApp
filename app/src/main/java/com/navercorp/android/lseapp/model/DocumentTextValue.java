@@ -37,12 +37,12 @@ public class DocumentTextValue implements DocumentComponentValue {
 
     @Override // DocumentComponentValue
     public byte[] getDataAsBytes() {
-        return mText.getBytes();
+        return new byte[0]; // TODO
     }
 
     @Override // DocumentComponentValue
     public void setDataFromBytes(byte[] data) {
-        mText = new String(data);
+        // TODO
     }
 
     @Override // Object
@@ -57,7 +57,7 @@ public class DocumentTextValue implements DocumentComponentValue {
 
     @Override // Object
     public String toString() {
-        return String.format("DocumentTextValue{mText=%s,mTextSpanSet}", mText, mTextSpanSet.toString());
+        return String.format("DocumentTextValue{mText=%s,mTextSpanSet=%s}", mText, mTextSpanSet.toString());
     }
 
     public String getText() {

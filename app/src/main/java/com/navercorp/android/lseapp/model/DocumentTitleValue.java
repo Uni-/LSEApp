@@ -33,12 +33,12 @@ public class DocumentTitleValue implements DocumentComponentValue {
 
     @Override // DocumentComponentValue
     public byte[] getDataAsBytes() {
-        return mText.getBytes();
+        return new byte[0]; // TODO
     }
 
     @Override // DocumentComponentValue
     public void setDataFromBytes(byte[] data) {
-        mText = new String(data);
+        // TODO
     }
 
     @Override // Object

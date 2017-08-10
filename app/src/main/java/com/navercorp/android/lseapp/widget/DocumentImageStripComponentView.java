@@ -5,6 +5,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
@@ -86,6 +87,8 @@ public class DocumentImageStripComponentView
 
     @Override // DocumentComponentView
     public boolean requestContentFocus() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(mImagesLayout.getWindowToken(), 0);
         return mImagesLayout.requestFocus();
     }
 
@@ -129,6 +132,8 @@ public class DocumentImageStripComponentView
         mImagesLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(mImagesLayout.getWindowToken(), 0);
                 mImagesLayout.requestFocus();
             }
         });

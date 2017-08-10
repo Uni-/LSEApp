@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/view_document_title_image_background"
         android:layout_alignBottom="@id/view_document_title_image_background"
-        android:background="@drawable/component_background_pad"
+        android:background="@drawable/component_background_pad_nodefborder"
         android:hint="@string/view_document_title_component_text_hint"
         android:minHeight="@dimen/view_document_title_component_text_height"
         android:scrollHorizontally="false"

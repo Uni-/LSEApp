@@ -39,11 +39,12 @@ public class DocumentImageStripValue implements DocumentComponentValue {
 
     @Override // DocumentComponentValue
     public byte[] getDataAsBytes() {
-        return new byte[0];
+        return new byte[0]; // TODO
     }
 
     @Override // DocumentComponentValue
     public void setDataFromBytes(byte[] data) {
+        // TODO
     }
 
     @Override // Object

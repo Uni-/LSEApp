@@ -10,6 +10,7 @@ import com.navercorp.android.lseapp.util.NotifyPolicy;
 import com.navercorp.android.lseapp.widget.DocumentComponentView;
 import com.navercorp.android.lseapp.widget.DocumentComponentViewFactory;
 import com.navercorp.android.lseapp.widget.DocumentImageStripComponentView;
+import com.navercorp.android.lseapp.widget.DocumentMapComponentView;
 import com.navercorp.android.lseapp.widget.DocumentTextComponentView;
 import com.navercorp.android.lseapp.widget.DocumentTitleComponentView;
 
@@ -51,6 +52,12 @@ public final class RvAdapter extends RecyclerView.Adapter<RvHolder> {
                 final DocumentImageStripComponentView imageStripView = (DocumentImageStripComponentView) view;
                 imageStripView.setOnContentFocusChangeListener(mActivity);
                 imageStripView.setOnInsertComponentListener(mActivity);
+                break;
+            }
+            case MAP: {
+                final DocumentMapComponentView mapView = (DocumentMapComponentView) view;
+                mapView.setOnContentFocusChangeListener(mActivity);
+                mapView.setOnInsertComponentListener(mActivity);
             }
             default:
         }
