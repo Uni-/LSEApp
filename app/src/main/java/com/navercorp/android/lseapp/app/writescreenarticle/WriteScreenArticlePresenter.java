@@ -3,7 +3,6 @@ package com.navercorp.android.lseapp.app.writescreenarticle;
 import com.navercorp.android.lseapp.data.ConcreteRepositoryFactory;
 import com.navercorp.android.lseapp.data.Repository;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
-import com.navercorp.android.lseapp.model.ScreenArticle;
 
 /**
  * Created by NAVER on 2017-07-20.
@@ -58,5 +57,10 @@ public final class WriteScreenArticlePresenter implements WriteScreenArticleCont
     @Override
     public void moveComponentValueItem(int fromIndex, int toIndex) {
         mRepository.moveComponentValueItemOfScreenArticle(fromIndex, toIndex);
+    }
+
+    @Override
+    public String getArticleToJsonString() {
+        return mRepository.getArticleToJsonString();
     }
 }

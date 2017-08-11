@@ -1,16 +1,21 @@
 package com.navercorp.android.lseapp.data;
 
+import com.navercorp.android.lseapp.data.local.LocalDataSource;
 import com.navercorp.android.lseapp.model.Article;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
 import com.navercorp.android.lseapp.model.ScreenArticle;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by NAVER on 2017-07-26.
  */
 
-public class ConcreteRepositoryFactory {
+public enum ConcreteRepositoryFactory {
+
+    ;
 
     private ConcreteRepositoryFactory() {
         throw new UnsupportedOperationException();
@@ -77,6 +82,39 @@ public class ConcreteRepositoryFactory {
             DocumentComponentValue value = list.get(fromIndex);
             list.remove(fromIndex);
             list.add(toIndex, value);
+        }
+
+        @Override
+        public void saveCurrentArticle() {
+            checkoutLocalSource();
+            // TODO
+            checkinLocalSource();
+        }
+
+        @Override
+        public Iterator<Map.Entry<Integer, String>> listArticlesIterator() {
+            checkoutLocalSource();
+            return null; // TODO
+        }
+
+        @Override
+        public String getArticleTitle(String sha1sumKey) {
+            checkoutLocalSource();
+            return null; // TODO
+        }
+
+        @Override
+        public void loadArticleAsCurrent(String sha1sumKey) {
+            checkoutLocalSource();
+            // TODO
+        }
+
+        private void checkinLocalSource() {
+            DataSource localDataSource = LocalDataSource.INSTANCE;
+        }
+
+        private void checkoutLocalSource() {
+            DataSource localDataSource = LocalDataSource.INSTANCE;
         }
     }
 }

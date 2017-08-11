@@ -14,11 +14,19 @@ public interface WriteScreenArticleContract {
     }
 
     interface Presenter extends BasePresenter<View> {
+
         DocumentComponentValue getComponentValueItem(int index);
+
         int getComponentValueItemCount();
+
         void addComponentValueItem(int index, DocumentComponentValue value);
+
         void removeComponentValueItem(int index);
+
         void replaceComponentValueItem(int index, DocumentComponentValue value);
+
         void moveComponentValueItem(int fromIndex, int toIndex);
+
+        String getArticleToJsonString();
     }
 }

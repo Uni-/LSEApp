@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.gson.Gson;
 import com.navercorp.android.lseapp.R;
 import com.navercorp.android.lseapp.app.selectlocationsearch.SelectLocationSearchActivity;
 import com.navercorp.android.lseapp.app.selectsavedarticles.SelectSavedArticleActivity;
@@ -19,6 +21,7 @@ import com.navercorp.android.lseapp.model.DocumentImageStripValue;
 import com.navercorp.android.lseapp.model.DocumentMapValue;
 import com.navercorp.android.lseapp.model.DocumentTextValue;
 import com.navercorp.android.lseapp.model.DocumentTitleValue;
+import com.navercorp.android.lseapp.model.ScreenArticle;
 import com.navercorp.android.lseapp.model.TextProperty;
 import com.navercorp.android.lseapp.util.Interval;
 import com.navercorp.android.lseapp.util.ListChange;
@@ -102,6 +105,10 @@ public final class WriteScreenArticleActivity
                 return true;
             }
             case R.id.menu_main_save: {
+                String jsonString = mPresenter.getArticleToJsonString();
+                Log.v("menu_main_save", jsonString);
+                Gson gson = new Gson();
+                ScreenArticle article = gson.fromJson(jsonString, ScreenArticle.class);
                 return true;
             }
             default:

@@ -22,8 +22,12 @@ public enum Hash {
         }
     }
 
-    public static String sha1sum(byte[] blob) {
-        return hexString(sha1MessageDigest.digest(blob));
+    public static byte[] sha1sum(byte[] blob) {
+        return sha1MessageDigest.digest(blob);
+    }
+
+    public static String sha1sumString(byte[] blob) {
+        return hexString(sha1sum(blob));
     }
 
     private static String hexString(byte[] blob) {
