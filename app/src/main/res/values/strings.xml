@@ -12,6 +12,7 @@
     <string name="activity_select_saved_articles_title">저장된 글 선택</string>
     <string name="activity_select_location_search_title">장소 선택 (검색)</string>
 
+    <string name="activity_select_saved_articles_list_empty">저장된 글이 없습니다.</string>
     <string name="activity_select_location_search_result_empty">검색 결과가 없습니다.</string>
 
     <string name="view_document_title_component_text_hint">제목</string>
@@ -31,14 +32,14 @@
     <string name="dialog_integer_stepper_ok">@string/ok</string>
     <string name="dialog_integer_stepper_cancel">@string/cancel</string>
 
-    <string name="view_window_bottom_bar_title_background">◪</string>
-    <string name="view_window_bottom_bar_title_nobackground">◫</string>
-    <string name="view_window_bottom_bar_text_bold"><b>B</b></string>
-    <string name="view_window_bottom_bar_text_italic"><i>I</i></string>
-    <string name="view_window_bottom_bar_text_underline"><u>U</u></string>
-    <string name="view_window_bottom_bar_text_size"></string>
-    <string name="view_window_bottom_bar_text_color">◐</string>
-    <string name="view_window_bottom_bar_image_merge">↑</string>
-    <string name="view_window_bottom_bar_image_split">↓</string>
-    <string name="view_window_bottom_bar_component_remove">×</string>
+    <string name="view_footer_control_panel_title_background">◪</string>
+    <string name="view_footer_control_panel_title_nobackground">◫</string>
+    <string name="view_footer_control_panel_text_bold"><b>B</b></string>
+    <string name="view_footer_control_panel_text_italic"><i>I</i></string>
+    <string name="view_footer_control_panel_text_underline"><u>U</u></string>
+    <string name="view_footer_control_panel_text_size">0</string>
+    <string name="view_footer_control_panel_text_color">◐</string>
+    <string name="view_footer_control_panel_image_merge">↑</string>
+    <string name="view_footer_control_panel_image_split">↓</string>
+    <string name="view_footer_control_panel_component_remove">×</string>
 </resources>

@@ -8,6 +8,5 @@ public interface DocumentComponentValue {
 
     DocumentComponentType componentType();
 
-    byte[] getDataAsBytes();
-    void setDataFromBytes(byte[] data);
+    ObjectValue getDataObject();
 }

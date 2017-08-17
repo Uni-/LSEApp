@@ -10,74 +10,74 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/view_window_bottom_bar_button_title_set_background"
+            android:id="@+id/view_footer_control_panel_button_title_set_background"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="0dp"
-            android:text="@string/view_window_bottom_bar_title_background"
+            android:text="@string/view_footer_control_panel_title_background"
             android:textAllCaps="false" />
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/view_window_bottom_bar_button_title_unset_background"
+            android:id="@+id/view_footer_control_panel_button_title_unset_background"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:padding="0dp"
-            android:text="@string/view_window_bottom_bar_title_nobackground"
+            android:text="@string/view_footer_control_panel_title_nobackground"
             android:textAllCaps="false" />
 
         <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/view_window_bottom_bar_checkbox_text_bold"
+            android:id="@+id/view_footer_control_panel_checkbox_text_bold"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="@string/view_window_bottom_bar_text_bold"
+            android:text="@string/view_footer_control_panel_text_bold"
             android:textStyle="bold" />
 
         <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/view_window_bottom_bar_checkbox_text_italic"
+            android:id="@+id/view_footer_control_panel_checkbox_text_italic"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="@string/view_window_bottom_bar_text_italic"
+            android:text="@string/view_footer_control_panel_text_italic"
             android:textStyle="italic" />
 
         <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/view_window_bottom_bar_checkbox_text_underline"
+            android:id="@+id/view_footer_control_panel_checkbox_text_underline"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="@string/view_window_bottom_bar_text_underline"
+            android:text="@string/view_footer_control_panel_text_underline"
             android:textStyle="normal" />
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/view_window_bottom_bar_button_text_size"
+            android:id="@+id/view_footer_control_panel_button_text_size"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="@string/view_window_bottom_bar_text_size"
+            android:text="@string/view_footer_control_panel_text_size"
             android:textStyle="normal" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/view_window_bottom_button_bar_text_color"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="@string/view_window_bottom_bar_text_color"
+            android:text="@string/view_footer_control_panel_text_color"
             android:textStyle="normal" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/view_window_bottom_button_bar_image_merge"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="@string/view_window_bottom_bar_image_merge"
+            android:text="@string/view_footer_control_panel_image_merge"
             android:textStyle="normal" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/view_window_bottom_button_bar_image_split"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="@string/view_window_bottom_bar_image_split"
+            android:text="@string/view_footer_control_panel_image_split"
             android:textStyle="normal" />
 
         <android.support.v7.widget.AppCompatButton
-            android:id="@+id/view_window_bottom_bar_button_component_remove"
+            android:id="@+id/view_footer_control_panel_button_component_remove"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="@string/view_window_bottom_bar_component_remove" />
+            android:text="@string/view_footer_control_panel_component_remove" />
     </LinearLayout>
 </ScrollView>

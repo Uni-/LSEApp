@@ -1,5 +1,9 @@
 package com.navercorp.android.lseapp.model;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.charset.Charset;
+
 /**
  * Created by NAVER on 2017-07-21.
  */
@@ -32,13 +36,19 @@ public class DocumentMapValue implements DocumentComponentValue {
     }
 
     @Override // DocumentComponentValue
-    public byte[] getDataAsBytes() {
-        return new byte[0]; // TODO
-    }
+    public ObjectValue getDataObject() {
+        byte[] locationTitleBytes = mLocationTitle.getBytes();
+        byte[] locationAddressBytes = mLocationAddress.getBytes();
 
-    @Override // DocumentComponentValue
-    public void setDataFromBytes(byte[] data) {
-        // TODO
+        ByteBuffer byteBuffer = ByteBuffer.allocate(locationTitleBytes.length + locationAddressBytes.length + 16);
+        byteBuffer.order(ByteOrder.BIG_ENDIAN);
+        byteBuffer.putInt(mLocationKatechX);
+        byteBuffer.putInt(mLocationKatechY);
+        byteBuffer.putInt(locationTitleBytes.length);
+        byteBuffer.put(locationTitleBytes);
+        byteBuffer.putInt(locationAddressBytes.length);
+        byteBuffer.put(locationAddressBytes);
+        return new ObjectValue(componentType().getGlobalTypeSerial(), byteBuffer.array());
     }
 
     @Override // Object
@@ -70,5 +80,32 @@ public class DocumentMapValue implements DocumentComponentValue {
 
     public String getLocationAddress() {
         return mLocationAddress;
+    }
+
+    public static DocumentMapValue createFromDataObject(ObjectValue dataObject) {
+        if (dataObject.getContentType() != DocumentComponentType.MAP.getGlobalTypeSerial()) {
+            throw new IllegalArgumentException();
+        }
+        ByteBuffer byteBuffer = ByteBuffer.wrap(dataObject.getContentValue());
+        byteBuffer.order(ByteOrder.BIG_ENDIAN);
+        int locationKatechX = byteBuffer.getInt();
+        int locationKatechY = byteBuffer.getInt();
+        String locationTitle;
+        String locationAddress;
+        do {
+            byte[] locationTitleBuffer = new byte[byteBuffer.getInt()];
+            for (int i = 0; i < locationTitleBuffer.length; i++) {
+                locationTitleBuffer[i] = byteBuffer.get();
+            }
+            locationTitle = new String(locationTitleBuffer, Charset.forName("UTF-8"));
+        } while (false);
+        do {
+            byte[] locationAddressBuffer = new byte[byteBuffer.getInt()];
+            for (int i = 0; i < locationAddressBuffer.length; i++) {
+                locationAddressBuffer[i] = byteBuffer.get();
+            }
+            locationAddress = new String(locationAddressBuffer, Charset.forName("UTF-8"));
+        } while (false);
+        return new DocumentMapValue(locationKatechX, locationKatechY, locationTitle, locationAddress);
     }
 }

@@ -1,14 +1,18 @@
 package com.navercorp.android.lseapp.model;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.charset.Charset;
+
 /**
  * Created by NAVER on 2017-07-21.
  */
 
 public class DocumentImageStripValue implements DocumentComponentValue {
 
-    private final String mImagePath0;
-    private final String mImagePath1;
-    private final String mImagePath2;
+    private String mImagePath0;
+    private String mImagePath1;
+    private String mImagePath2;
 
     public DocumentImageStripValue() {
         this("", "", "");
@@ -38,13 +42,20 @@ public class DocumentImageStripValue implements DocumentComponentValue {
     }
 
     @Override // DocumentComponentValue
-    public byte[] getDataAsBytes() {
-        return new byte[0]; // TODO
-    }
+    public ObjectValue getDataObject() {
+        byte[] imagePath0Bytes = mImagePath0.getBytes();
+        byte[] imagePath1Bytes = mImagePath1.getBytes();
+        byte[] imagePath2Bytes = mImagePath2.getBytes();
 
-    @Override // DocumentComponentValue
-    public void setDataFromBytes(byte[] data) {
-        // TODO
+        ByteBuffer byteBuffer = ByteBuffer.allocate(imagePath0Bytes.length + imagePath1Bytes.length + imagePath2Bytes.length + 12);
+        byteBuffer.order(ByteOrder.BIG_ENDIAN);
+        byteBuffer.putInt(imagePath0Bytes.length);
+        byteBuffer.put(imagePath0Bytes);
+        byteBuffer.putInt(imagePath1Bytes.length);
+        byteBuffer.put(imagePath1Bytes);
+        byteBuffer.putInt(imagePath2Bytes.length);
+        byteBuffer.put(imagePath2Bytes);
+        return new ObjectValue(componentType().getGlobalTypeSerial(), byteBuffer.array());
     }
 
     @Override // Object
@@ -76,5 +87,38 @@ public class DocumentImageStripValue implements DocumentComponentValue {
 
     public int count() {
         return ((!mImagePath0.isEmpty()) ? 1 : 0) + ((!mImagePath1.isEmpty()) ? 1 : 0) + ((!mImagePath2.isEmpty()) ? 1 : 0);
+    }
+
+    public static DocumentImageStripValue createFromDataObject(ObjectValue dataObject) {
+        if (dataObject.getContentType() != DocumentComponentType.IMAGE.getGlobalTypeSerial()) {
+            throw new IllegalArgumentException();
+        }
+        ByteBuffer byteBuffer = ByteBuffer.wrap(dataObject.getContentValue());
+        byteBuffer.order(ByteOrder.BIG_ENDIAN);
+        String imagePath0;
+        String imagePath1;
+        String imagePath2;
+        do {
+            byte[] imagePath0Buffer = new byte[byteBuffer.getInt()];
+            for (int i = 0; i < imagePath0Buffer.length; i++) {
+                imagePath0Buffer[i] = byteBuffer.get();
+            }
+            imagePath0 = new String(imagePath0Buffer, Charset.forName("UTF-8"));
+        } while (false);
+        do {
+            byte[] imagePath1Buffer = new byte[byteBuffer.getInt()];
+            for (int i = 0; i < imagePath1Buffer.length; i++) {
+                imagePath1Buffer[i] = byteBuffer.get();
+            }
+            imagePath1 = new String(imagePath1Buffer, Charset.forName("UTF-8"));
+        } while (false);
+        do {
+            byte[] imagePath2Buffer = new byte[byteBuffer.getInt()];
+            for (int i = 0; i < imagePath2Buffer.length; i++) {
+                imagePath2Buffer[i] = byteBuffer.get();
+            }
+            imagePath2 = new String(imagePath2Buffer, Charset.forName("UTF-8"));
+        } while (false);
+        return new DocumentImageStripValue(imagePath0, imagePath1, imagePath2);
     }
 }

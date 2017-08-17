@@ -14,6 +14,10 @@ public interface ObjectType<E extends Enum<E> & ObjectType<E>> {
 
         ;
 
+        private RegistryHelper() {
+            throw new UnsupportedOperationException();
+        }
+
         public static Class<? extends ObjectType>[] getAll() {
             final Class<?>[] registry = {
                     ArticleType.class,

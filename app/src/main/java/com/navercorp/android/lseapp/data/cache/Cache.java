@@ -1,17 +1,17 @@
-package com.navercorp.android.lseapp.data;
+package com.navercorp.android.lseapp.data.cache;
 
+import com.navercorp.android.lseapp.model.Article;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by NAVER on 2017-08-04.
  */
 
-public interface Repository {
+public interface Cache {
 
-    void setNewScreenArticle();
+    void setCurrentArticle(Article article);
+
+    Article getCurrentArticle();
 
     DocumentComponentValue getComponentValueItemOfScreenArticle(int index);
 
@@ -24,14 +24,4 @@ public interface Repository {
     void replaceComponentValueItemOfScreenArticle(int index, DocumentComponentValue value);
 
     void moveComponentValueItemOfScreenArticle(int fromIndex, int toIndex);
-
-    boolean saveCurrentArticle();
-
-    Iterator<Map.Entry<String, String>> listArticlesIterator();
-
-    String getArticleTitle(String sha1sumKey);
-
-    void loadArticleAsCurrent(String sha1sumKey);
-
-    boolean deleteArticle(String sha1sumKey);
 }

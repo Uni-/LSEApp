@@ -71,30 +71,30 @@ public class FooterControlPanelView
     @Override // View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.view_window_bottom_bar_button_title_set_background: {
+            case R.id.view_footer_control_panel_button_title_set_background: {
                 dispatchTitleBackgroundSelect();
                 break;
             }
-            case R.id.view_window_bottom_bar_button_title_unset_background: {
+            case R.id.view_footer_control_panel_button_title_unset_background: {
                 dispatchTitleBackgroundRemove();
                 break;
             }
-            case R.id.view_window_bottom_bar_checkbox_text_bold: {
+            case R.id.view_footer_control_panel_checkbox_text_bold: {
                 mTextBold = getTextBoldButtonChecked();
                 dispatchTextBoldChange();
                 break;
             }
-            case R.id.view_window_bottom_bar_checkbox_text_italic: {
+            case R.id.view_footer_control_panel_checkbox_text_italic: {
                 mTextItalic = getTextItalicButtonChecked();
                 dispatchTextItalicChange();
                 break;
             }
-            case R.id.view_window_bottom_bar_checkbox_text_underline: {
+            case R.id.view_footer_control_panel_checkbox_text_underline: {
                 mTextUnderline = getTextUnderlineButtonChecked();
                 dispatchTextUnderlineChange();
                 break;
             }
-            case R.id.view_window_bottom_bar_button_text_size: {
+            case R.id.view_footer_control_panel_button_text_size: {
                 IntegerStepperDialogBuilder builder = new IntegerStepperDialogBuilder(getContext());
                 builder.value(mTextFontSize);
                 builder.setOnDecideValueListener(this);
@@ -116,7 +116,7 @@ public class FooterControlPanelView
                 dispatchImageStripSplit();
                 break;
             }
-            case R.id.view_window_bottom_bar_button_component_remove: {
+            case R.id.view_footer_control_panel_button_component_remove: {
                 dispatchRemoveComponent();
                 break;
             }
@@ -164,16 +164,16 @@ public class FooterControlPanelView
     private void init() {
         inflate(getContext(), R.layout.view_footer_control_panel, this);
 
-        mTitleSetBackgroundButton = (AppCompatButton) findViewById(R.id.view_window_bottom_bar_button_title_set_background);
-        mTitleUnsetBackgroundButton = (AppCompatButton) findViewById(R.id.view_window_bottom_bar_button_title_unset_background);
-        mTextBoldCheckBox = (AppCompatCheckBox) findViewById(R.id.view_window_bottom_bar_checkbox_text_bold);
-        mTextItalicCheckBox = (AppCompatCheckBox) findViewById(R.id.view_window_bottom_bar_checkbox_text_italic);
-        mTextUnderlineCheckBox = (AppCompatCheckBox) findViewById(R.id.view_window_bottom_bar_checkbox_text_underline);
-        mTextSizeButton = (AppCompatButton) findViewById(R.id.view_window_bottom_bar_button_text_size);
+        mTitleSetBackgroundButton = (AppCompatButton) findViewById(R.id.view_footer_control_panel_button_title_set_background);
+        mTitleUnsetBackgroundButton = (AppCompatButton) findViewById(R.id.view_footer_control_panel_button_title_unset_background);
+        mTextBoldCheckBox = (AppCompatCheckBox) findViewById(R.id.view_footer_control_panel_checkbox_text_bold);
+        mTextItalicCheckBox = (AppCompatCheckBox) findViewById(R.id.view_footer_control_panel_checkbox_text_italic);
+        mTextUnderlineCheckBox = (AppCompatCheckBox) findViewById(R.id.view_footer_control_panel_checkbox_text_underline);
+        mTextSizeButton = (AppCompatButton) findViewById(R.id.view_footer_control_panel_button_text_size);
         mTextColorButton = (AppCompatButton) findViewById(R.id.view_window_bottom_button_bar_text_color);
         mImageMergeButton = (AppCompatButton) findViewById(R.id.view_window_bottom_button_bar_image_merge);
         mImageSplitButton = (AppCompatButton) findViewById(R.id.view_window_bottom_button_bar_image_split);
-        mComponentRemoveButton = (AppCompatButton) findViewById(R.id.view_window_bottom_bar_button_component_remove);
+        mComponentRemoveButton = (AppCompatButton) findViewById(R.id.view_footer_control_panel_button_component_remove);
 
         mControlViewMap = new EnumMap<Control, View>(Control.class);
         mControlViewMap.put(Control.TITLE_SET_BACKGROUND, mTitleSetBackgroundButton);

@@ -1,4 +1,4 @@
-package com.navercorp.android.lseapp.data.local;
+package com.navercorp.android.lseapp.data.localdb;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,12 +1,17 @@
 package com.navercorp.android.lseapp.data;
 
-import com.navercorp.android.lseapp.data.local.LocalDataSource;
+import android.content.Context;
+
+import com.navercorp.android.lseapp.data.cache.Cache;
+import com.navercorp.android.lseapp.data.cache.CurrentArticleManager;
+import com.navercorp.android.lseapp.data.localdb.LocalDataSource;
+import com.navercorp.android.lseapp.data.localdb.LocalDb;
 import com.navercorp.android.lseapp.model.Article;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
+import com.navercorp.android.lseapp.model.DocumentTitleValue;
 import com.navercorp.android.lseapp.model.ScreenArticle;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,7 +26,8 @@ public enum ConcreteRepositoryFactory {
         throw new UnsupportedOperationException();
     }
 
-    public static Repository getInstance() {
+    public static Repository getInstance(Context context) {
+        ConcreteRepository.INSTANCE.setContext(context);
         return ConcreteRepository.INSTANCE;
     }
 
@@ -29,92 +35,82 @@ public enum ConcreteRepositoryFactory {
 
         INSTANCE;
 
-        private Article mCurrentArticle;
+        private final Cache mCache;
+        private final LocalDb mLocalDb;
 
         private ConcreteRepository() {
-            mCurrentArticle = null;
+            mCache = CurrentArticleManager.INSTANCE;
+            mLocalDb = LocalDataSource.INSTANCE;
+        }
+
+        protected void setContext(Context context) {
+            mLocalDb.resetHelper(context);
         }
 
         @Override
         public void setNewScreenArticle() {
-            mCurrentArticle = new ScreenArticle();
+            mCache.setCurrentArticle(new ScreenArticle());
         }
 
         @Override
         public DocumentComponentValue getComponentValueItemOfScreenArticle(int index) {
-            ScreenArticle screenArticle = (ScreenArticle) mCurrentArticle;
-            List<DocumentComponentValue> list = screenArticle.getComponentsList();
-            return list.get(index);
+            return mCache.getComponentValueItemOfScreenArticle(index);
         }
 
         @Override
         public int getComponentValueItemCountOfScreenArticle() {
-            ScreenArticle screenArticle = (ScreenArticle) mCurrentArticle;
-            List<DocumentComponentValue> list = screenArticle.getComponentsList();
-            return list.size();
+            return mCache.getComponentValueItemCountOfScreenArticle();
         }
 
         @Override
         public void addComponentValueItemToScreenArticle(int index, DocumentComponentValue value) {
-            ScreenArticle screenArticle = (ScreenArticle) mCurrentArticle;
-            List<DocumentComponentValue> list = screenArticle.getComponentsList();
-            list.add(index, value);
+            mCache.addComponentValueItemToScreenArticle(index, value);
         }
 
         @Override
         public void removeComponentValueItemFromScreenArticle(int index) {
-            ScreenArticle screenArticle = (ScreenArticle) mCurrentArticle;
-            List<DocumentComponentValue> list = screenArticle.getComponentsList();
-            list.remove(index);
+            mCache.removeComponentValueItemFromScreenArticle(index);
         }
 
         @Override
         public void replaceComponentValueItemOfScreenArticle(int index, DocumentComponentValue value) {
-            ScreenArticle screenArticle = (ScreenArticle) mCurrentArticle;
-            List<DocumentComponentValue> list = screenArticle.getComponentsList();
-            list.set(index, value);
+            mCache.replaceComponentValueItemOfScreenArticle(index, value);
         }
 
         @Override
         public void moveComponentValueItemOfScreenArticle(int fromIndex, int toIndex) {
-            ScreenArticle screenArticle = (ScreenArticle) mCurrentArticle;
-            List<DocumentComponentValue> list = screenArticle.getComponentsList();
-            DocumentComponentValue value = list.get(fromIndex);
-            list.remove(fromIndex);
-            list.add(toIndex, value);
+            mCache.moveComponentValueItemOfScreenArticle(fromIndex, toIndex);
         }
 
         @Override
-        public void saveCurrentArticle() {
-            checkoutLocalSource();
-            // TODO
-            checkinLocalSource();
+        public boolean saveCurrentArticle() {
+            return mLocalDb.saveArticle(mCache.getCurrentArticle());
         }
 
         @Override
-        public Iterator<Map.Entry<Integer, String>> listArticlesIterator() {
-            checkoutLocalSource();
-            return null; // TODO
+        public Iterator<Map.Entry<String, String>> listArticlesIterator() {
+            return mLocalDb.listArticlesIterator();
         }
 
         @Override
         public String getArticleTitle(String sha1sumKey) {
-            checkoutLocalSource();
-            return null; // TODO
+            Article article = mLocalDb.getArticle(sha1sumKey);
+            switch (article.type()) {
+                case SCREEN:
+                    return ((DocumentTitleValue) ((ScreenArticle) article).getComponentsList().get(0)).getText();
+                default:
+                    throw new UnsupportedOperationException();
+            }
         }
 
         @Override
         public void loadArticleAsCurrent(String sha1sumKey) {
-            checkoutLocalSource();
-            // TODO
+            mCache.setCurrentArticle(mLocalDb.getArticle(sha1sumKey));
         }
 
-        private void checkinLocalSource() {
-            DataSource localDataSource = LocalDataSource.INSTANCE;
-        }
-
-        private void checkoutLocalSource() {
-            DataSource localDataSource = LocalDataSource.INSTANCE;
+        @Override
+        public boolean deleteArticle(String sha1sumKey) {
+            return mLocalDb.deleteArticle(sha1sumKey);
         }
     }
 }

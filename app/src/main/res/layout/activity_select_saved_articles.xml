@@ -5,4 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".app.selectsavedarticles.SelectSavedArticleActivity">
 
+    <android.support.v7.widget.ListViewCompat
+        android:id="@+id/activity_select_saved_articles_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/activity_select_saved_articles_list_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/activity_select_saved_articles_list_empty" />
+
 </RelativeLayout>

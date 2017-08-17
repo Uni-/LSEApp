@@ -228,4 +228,12 @@ public class TextSpanSet extends AbstractSet<TextSpan> implements NavigableSet<T
         }
         return result;
     }
+
+    public int definedPropertiesCount() {
+        int count = 0;
+        for (TextSpan textSpan : mInternalSet) {
+            count += textSpan.properties().size();
+        }
+        return count;
+    }
 }

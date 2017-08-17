@@ -4,6 +4,9 @@ import com.navercorp.android.lseapp.data.ConcreteRepositoryFactory;
 import com.navercorp.android.lseapp.data.Repository;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
 
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Created by NAVER on 2017-07-20.
  */
@@ -15,7 +18,7 @@ public final class WriteScreenArticlePresenter implements WriteScreenArticleCont
 
     public WriteScreenArticlePresenter(WriteScreenArticleContract.View view) {
         mView = view;
-        mRepository = ConcreteRepositoryFactory.getInstance();
+        mRepository = ConcreteRepositoryFactory.getInstance(mView.getContext());
     }
 
     @Override // WriteScreenArticleContract.Presenter
@@ -60,7 +63,18 @@ public final class WriteScreenArticlePresenter implements WriteScreenArticleCont
     }
 
     @Override
-    public String getArticleToJsonString() {
-        return mRepository.getArticleToJsonString();
+    public void saveCurrentArticleAndShowMessage() {
+        boolean success = mRepository.saveCurrentArticle();
+        if (success) {
+            mView.showArticleSaveSuccessMessage();
+        } else {
+            mView.showArticleSaveFailureMessage();
+        }
+    }
+
+    @Override
+    public void loadArticleAsCurrent(String sha1sumKey) {
+        mRepository.loadArticleAsCurrent(sha1sumKey);
+        mView.notifyValuesChanged();
     }
 }

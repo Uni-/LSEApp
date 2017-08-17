@@ -45,6 +45,8 @@ public final class SelectLocationSearchActivity extends AppCompatActivity implem
         mListView = (ListViewCompat) findViewById(R.id.activity_select_location_search_list);
         mListEmptyTextView = (AppCompatTextView) findViewById(R.id.activity_select_location_search_text_list_empty);
 
+        setResult(RESULT_CANCELED);
+
         mAdapter = new SearchResultItemsListAdapter(this);
         mListView.setAdapter(mAdapter);
         mListView.setEmptyView(mListEmptyTextView);

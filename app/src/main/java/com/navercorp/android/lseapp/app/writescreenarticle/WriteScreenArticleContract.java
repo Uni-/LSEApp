@@ -1,5 +1,7 @@
 package com.navercorp.android.lseapp.app.writescreenarticle;
 
+import android.content.Context;
+
 import com.navercorp.android.lseapp.base.BasePresenter;
 import com.navercorp.android.lseapp.base.BaseView;
 import com.navercorp.android.lseapp.model.DocumentComponentValue;
@@ -11,6 +13,14 @@ import com.navercorp.android.lseapp.model.DocumentComponentValue;
 public interface WriteScreenArticleContract {
 
     interface View extends BaseView<Presenter> {
+
+        Context getContext();
+
+        void showArticleSaveSuccessMessage();
+
+        void showArticleSaveFailureMessage();
+
+        void notifyValuesChanged();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -27,6 +37,8 @@ public interface WriteScreenArticleContract {
 
         void moveComponentValueItem(int fromIndex, int toIndex);
 
-        String getArticleToJsonString();
+        void saveCurrentArticleAndShowMessage();
+
+        void loadArticleAsCurrent(String sha1sumKey);
     }
 }

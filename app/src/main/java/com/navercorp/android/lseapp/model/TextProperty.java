@@ -12,9 +12,9 @@ public enum TextProperty {
     COLOR(Integer.class),
     ;
 
-    public final Class<?> var;
+    public final Class<?> valueType;
 
     private TextProperty(Class<?> v) {
-        var = v;
+        valueType = v;
     }
 }

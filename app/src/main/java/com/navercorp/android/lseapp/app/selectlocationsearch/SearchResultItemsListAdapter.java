@@ -27,10 +27,6 @@ class SearchResultItemsListAdapter extends ArrayAdapter<SearchResultItem> {
         super(context, layout);
     }
 
-    public SearchResultItemsListAdapter(Context context, List<SearchResultItem> items) {
-        super(context, layout, items);
-    }
-
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

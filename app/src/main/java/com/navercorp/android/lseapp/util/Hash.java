@@ -12,6 +12,8 @@ public enum Hash {
 
     ; // no instance
 
+    public static final int SHA1SUM_LENGTH_IN_BYTES = 20;
+
     private static final MessageDigest sha1MessageDigest;
 
     static {

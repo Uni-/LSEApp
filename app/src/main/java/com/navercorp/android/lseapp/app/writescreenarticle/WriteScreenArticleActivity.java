@@ -1,17 +1,17 @@
 package com.navercorp.android.lseapp.app.writescreenarticle;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.navercorp.android.lseapp.R;
 import com.navercorp.android.lseapp.app.selectlocationsearch.SelectLocationSearchActivity;
 import com.navercorp.android.lseapp.app.selectsavedarticles.SelectSavedArticleActivity;
@@ -21,7 +21,6 @@ import com.navercorp.android.lseapp.model.DocumentImageStripValue;
 import com.navercorp.android.lseapp.model.DocumentMapValue;
 import com.navercorp.android.lseapp.model.DocumentTextValue;
 import com.navercorp.android.lseapp.model.DocumentTitleValue;
-import com.navercorp.android.lseapp.model.ScreenArticle;
 import com.navercorp.android.lseapp.model.TextProperty;
 import com.navercorp.android.lseapp.util.Interval;
 import com.navercorp.android.lseapp.util.ListChange;
@@ -50,6 +49,7 @@ public final class WriteScreenArticleActivity
 
     private FooterControlPanelView mFooterControlPanelView;
 
+    private OnLoadArticleHandler mOnLoadArticleHandler;
     private OnSelectImageHandler mOnSelectImageHandler;
     private OnSelectLocationHandler mOnSelectLocationHandler;
 
@@ -101,14 +101,21 @@ public final class WriteScreenArticleActivity
         switch (item.getItemId()) {
             case R.id.menu_main_load: {
                 Intent intent = new Intent(WriteScreenArticleActivity.this, SelectSavedArticleActivity.class);
-                startActivityForResult(intent, REQUEST_SELECT_SAVED_ARTICLE);
+                startLoadArticle(new OnLoadArticleHandler() {
+                    @Override
+                    public void onLoadArticleOk(String sha1sum) {
+                        mPresenter.loadArticleAsCurrent(sha1sum);
+                    }
+
+                    @Override
+                    public void onLoadArticleCancel() {
+                        // do nothing
+                    }
+                });
                 return true;
             }
             case R.id.menu_main_save: {
-                String jsonString = mPresenter.getArticleToJsonString();
-                Log.v("menu_main_save", jsonString);
-                Gson gson = new Gson();
-                ScreenArticle article = gson.fromJson(jsonString, ScreenArticle.class);
+                mPresenter.saveCurrentArticleAndShowMessage();
                 return true;
             }
             default:
@@ -120,7 +127,12 @@ public final class WriteScreenArticleActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_SELECT_SAVED_ARTICLE: {
-                // TODO
+                if (resultCode == AppCompatActivity.RESULT_OK) {
+                    String sha1sum = data.getStringExtra(SelectSavedArticleActivity.EXTRA_STRING_KEY_SHA1SUM);
+                    mOnLoadArticleHandler.onLoadArticleOk(sha1sum);
+                } else if (resultCode == AppCompatActivity.RESULT_CANCELED) {
+                    mOnLoadArticleHandler.onLoadArticleCancel();
+                }
                 break;
             }
             case REQUEST_SELECT_IMAGE: {
@@ -153,6 +165,26 @@ public final class WriteScreenArticleActivity
     @Override // WriteScreenArticleContract.View
     public WriteScreenArticleContract.Presenter getPresenter() {
         return mPresenter;
+    }
+
+    @Override // WriteScreenArticleContract.View
+    public Context getContext() {
+        return getApplicationContext();
+    }
+
+    @Override // WriteScreenArticleContract.View
+    public void showArticleSaveSuccessMessage() {
+        Toast.makeText(this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override // WriteScreenArticleContract.View
+    public void showArticleSaveFailureMessage() {
+        Toast.makeText(this, "오류가 발생해 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override // WriteScreenArticleContract.View
+    public void notifyValuesChanged() {
+        valuesChanged(true);
     }
 
     @Override // DocumentComponentView.OnEnterKeyListener
@@ -385,6 +417,12 @@ public final class WriteScreenArticleActivity
         }
     }
 
+    private void startLoadArticle(OnLoadArticleHandler onLoadArticleHandler) {
+        mOnLoadArticleHandler = onLoadArticleHandler;
+        Intent intent = new Intent(WriteScreenArticleActivity.this, SelectSavedArticleActivity.class);
+        startActivityForResult(intent, REQUEST_SELECT_SAVED_ARTICLE);
+    }
+
     private void startSelectImage(OnSelectImageHandler onSelectImageHandler) {
         mOnSelectImageHandler = onSelectImageHandler;
         Intent intent = new Intent();
@@ -457,6 +495,13 @@ public final class WriteScreenArticleActivity
         if (v != null) {
             v.setComponentAdderVisibility(visibility);
         }
+    }
+
+    private interface OnLoadArticleHandler {
+
+        void onLoadArticleOk(String sha1sum);
+
+        void onLoadArticleCancel();
     }
 
     private interface OnSelectImageHandler {

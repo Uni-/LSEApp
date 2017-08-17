@@ -47,7 +47,7 @@ public class TextSpan implements Comparable<TextSpan> {
     }
 
     public Object get(TextProperty entry, Object defaultValue) {
-        if (!entry.var.equals(defaultValue.getClass())) {
+        if (!entry.valueType.equals(defaultValue.getClass())) {
             throw new AssertionError();
         }
         Object o = mPropertyValues.get(entry);
@@ -55,7 +55,7 @@ public class TextSpan implements Comparable<TextSpan> {
     }
 
     public void set(TextProperty entry, Object value) {
-        if (!entry.var.equals(value.getClass())) {
+        if (!entry.valueType.equals(value.getClass())) {
             throw new AssertionError();
         }
         mPropertyValues.put(entry, value);
